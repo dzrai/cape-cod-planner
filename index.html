@@ -143,6 +143,15 @@
   .lodge-table a{font-family:-apple-system,sans-serif; font-size:.76rem; color:var(--sea);}
   .bestfor{font-size:.8rem; color:var(--muted); font-style:italic;}
   tr.pick td{background:#f0f6ee;}
+  .fsep{width:1px; height:22px; background:var(--line); margin:0 4px; display:inline-block; vertical-align:middle;}
+  .fbtn.diet{border-color:var(--green); color:var(--green);}
+  .fbtn.diet.active{background:var(--green); color:#fff;}
+  .fbadges{display:flex; flex-wrap:wrap; gap:5px; margin:2px 0 7px;}
+  .mtag{font-family:-apple-system,sans-serif; font-size:.68rem; background:var(--chip); color:var(--navy); border-radius:5px; padding:2px 7px;}
+  .dtag{font-family:-apple-system,sans-serif; font-size:.68rem; font-weight:700; background:#fff; border:1.5px solid; border-radius:5px; padding:1px 6px;}
+  .dietnote{background:#eef5ee; border:1px solid #cfe0cf; border-left:4px solid var(--green); border-radius:8px; padding:11px 14px; font-size:.85rem; margin:0 0 14px;}
+  .screened td{background:#fbf0ee;}
+  .screened .lname{color:#a23b2c;}
   footer{text-align:center; font-family:-apple-system,sans-serif; font-size:.78rem; color:var(--muted); padding:24px;}
   @media(max-width:760px){ .windows{grid-template-columns:1fr;} .slots{grid-template-columns:repeat(2,1fr);} .planner{position:static;} }
 </style>
@@ -169,6 +178,8 @@
 <main>
 <!-- ============ TAB 1: ITINERARY ============ -->
 <section class="tab-panel active" id="tab0">
+
+  <div class="dietnote">🌱 <b>Heads up on the food below:</b> some named spots (Portuguese Bakery malasadas, cod bánh mì, butter lobster rolls) are Mom's picks, <b>not gluten-free/dairy-free</b>. Daniella's safe swaps live in the <b>Activity Bank → 🌱 GF+DF</b> filter — e.g. Sweet Izzy (all GF+DF), Mac's for GF-fried seafood, the Lobster Pot's separate GF menu.</div>
 
   <h2>The dates</h2>
   <div class="windows">
@@ -228,14 +239,17 @@
   </div>
 
   <div class="totalbox">
-    <h3>💰 Trip total, estimated (2 people, 4 nights)</h3>
+    <h3>💰 Estimated budget by category (2 people · 4 nights · Aug 20–24)</h3>
     <table>
-      <tr><th>Bucket</th><th>Estimate</th><th>Notes</th></tr>
-      <tr><td>Activities + food + gas (Days 1–5 above)</td><td>~$1,040</td><td>+$90 seal cruise, +$150 Ceraldi if added</td></tr>
-      <tr><td>Lodging — 4 nights, Aug 20–24 (peak, incl. Sat)</td><td>$1,600–2,600</td><td>mid-range inn/B&amp;B or hotel (see Lodging tab)</td></tr>
-      <tr><td>Buffer (10–15%)</td><td>~$300–400</td><td>the Cape finds ways</td></tr>
+      <tr><th>Category</th><th>Low</th><th>High</th><th>What's in it</th></tr>
+      <tr><td>🚗 Transportation</td><td>$120</td><td>$200</td><td>Gas + tolls round trip from NYC; beach/Seashore parking (~$25/day)</td></tr>
+      <tr><td>🏨 Lodging (4 nights)</td><td>$1,500</td><td>$2,400</td><td>Mid-range inn/B&amp;B (Old Harbor / Captain's). Splurge resort adds $1,000–2,500</td></tr>
+      <tr><td>🎟 Activities</td><td>$150</td><td>$350</td><td>Heritage Gardens, Pilgrim Monument, museums; +seal cruise ~$90 / whale watch ~$140</td></tr>
+      <tr><td>🍽 Food (2 meals/day)</td><td>$700</td><td>$1,050</td><td>Casual meals for two + the two splurge dinners (28 Atlantic, Aplaya/Ceraldi)</td></tr>
+      <tr><td>🛍 Misc / buffer</td><td>$200</td><td>$350</td><td>Coffee, treats, souvenirs, tips, the-Cape-finds-ways cushion</td></tr>
+      <tr><td style="border-top:2px solid rgba(255,255,255,.35)"><b>Total (two)</b></td><td style="border-top:2px solid rgba(255,255,255,.35)"><b>~$2,700</b></td><td style="border-top:2px solid rgba(255,255,255,.35)"><b>~$4,350</b></td><td style="border-top:2px solid rgba(255,255,255,.35)">≈ $1,350–2,175 per person</td></tr>
     </table>
-    <div class="grand">➞ <b>Aug 20–24: roughly $2,900–4,000 all-in for two.</b> Splurge lodging (Chatham Bars Inn / Wequassett) adds $1,000–2,500. Fallback Sept window would run ~$600–800 less.</div>
+    <div class="grand">➞ Plan on <b>roughly $2,900–4,000 all-in for two</b> for a comfortable version. Biggest levers: lodging tier, and whether you add the seal cruise + a second splurge dinner. The Sept fallback window runs ~$600–800 less. Live day-by-day tallies are on the Activity Bank tab.</div>
   </div>
 
   <h2>Book-ahead list</h2>
@@ -277,6 +291,7 @@
   </div>
 
   <h2>Activity bank</h2>
+  <div class="dietnote">🌱 <b>Gluten-free + dairy-free tags:</b> food cards show meal times and <b>GF</b>/<b>DF</b> badges — <span style="color:#2e7d46;font-weight:700">✓</span> reliable options, <span style="color:#b8860b;font-weight:700">~</span> some/can-be-modified (confirm), <span style="color:#b3443d;font-weight:700">✕</span> not suitable. Tap <b>🌱 GF+DF</b> to show only Daniella-friendly spots, or a meal button to filter. <b>Always confirm celiac-level GF + dairy allergy and cross-contamination with the restaurant</b> — badges reflect recent research, not a guarantee, and menus change.</div>
   <div class="filters" id="filters"></div>
   <div class="bank-grid" id="bank"></div>
 
@@ -291,13 +306,13 @@
   <table class="lodge-table">
     <tr><th>Property</th><th>🧼 Clean</th><th>🎉 Fun</th><th>📍 Convenient</th><th>🤫 Quiet</th><th>💵 Price / night</th><th>Best for</th><th>Links</th></tr>
     <tr class="pick">
-      <td><span class="lname">Captain's House Inn</span><br><span class="ltype">Luxury B&amp;B · Old Harbor Rd · ⭐ top pick for this trip</span></td>
+      <td><span class="lname">Captain's House Inn</span><br><span class="ltype">Luxury B&amp;B · Old Harbor Rd · ⭐ co-top pick · adults-only</span></td>
       <td class="dots clean"><span class="on">●●●●●</span></td>
       <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
       <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
       <td class="dots"><span class="on">●●●●●</span></td>
       <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$450–650 · Sept ~$300–450 · gourmet breakfast incl.</span></td>
-      <td class="bestfor">Immaculate reputation, elegant, quiet — the mother-daughter sweet spot</td>
+      <td class="bestfor">Spotless & serene, adults-only — the quiet-luxury pick (8–15 min walk to town)</td>
       <td><a href="https://www.tripadvisor.com/Hotel_Review-g41499-d114159-Reviews-Captain_s_House_Inn-Chatham_Cape_Cod_Massachusetts.html" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Captains+House+Inn+Chatham+MA" target="_blank">Map</a></td>
     </tr>
     <tr>
@@ -340,25 +355,15 @@
       <td class="bestfor">Dead center of the action — accept some Main St hum (esp. Fri concerts)</td>
       <td><a href="https://www.google.com/search?q=Chatham+Wayside+Inn+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Chatham+Wayside+Inn+MA" target="_blank">Map</a></td>
     </tr>
-    <tr>
-      <td><span class="lname">Old Harbor Inn</span><br><span class="ltype">B&amp;B · 22 Old Harbor Rd</span></td>
+    <tr class="pick">
+      <td><span class="lname">Old Harbor Inn</span><br><span class="ltype">B&amp;B · 22 Old Harbor Rd · ⭐ agent's #1 for clean</span></td>
       <td class="dots clean"><span class="on">●●●●●</span></td>
       <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
       <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
       <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
-      <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$350–500 · Sept ~$250–350 · homemade breakfast</span></td>
-      <td class="bestfor">Warm, personal, fireplace-rooms B&amp;B a short stroll from town</td>
+      <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$350–525 · Sept ~$250–350 · hot breakfast + 24/7 snacks</span></td>
+      <td class="bestfor">⭐ Cleanest all-arounder: 5.0-star "impeccable," owner-run, walkable to the quiet end of Main St</td>
       <td><a href="https://www.google.com/search?q=Old+Harbor+Inn+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Old+Harbor+Inn+Chatham+MA" target="_blank">Map</a></td>
-    </tr>
-    <tr>
-      <td><span class="lname">Surfside Inn</span><br><span class="ltype">Historic B&amp;B · steps from Lighthouse Beach</span></td>
-      <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
-      <td class="dots fun"><span class="on">●●●●</span><span class="off">○</span></td>
-      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
-      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
-      <td><span class="price-band">$$</span><br><span class="price-est">Aug ~$300–475 · Sept ~$225–350 · wine &amp; cheese porch hour</span></td>
-      <td class="bestfor">Beach-first value with a sociable porch (seasonal)</td>
-      <td><a href="https://www.google.com/search?q=Surfside+Inn+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Surfside+Inn+Chatham+MA" target="_blank">Map</a></td>
     </tr>
     <tr>
       <td><span class="lname">Hawthorne Motel</span><br><span class="ltype">Waterfront motel · 196 Shore Rd</span></td>
@@ -371,14 +376,44 @@
       <td><a href="https://www.google.com/search?q=Hawthorne+Motel+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Hawthorne+Motel+Chatham+MA" target="_blank">Map</a></td>
     </tr>
     <tr>
-      <td><span class="lname">Queen Anne Inn</span><br><span class="ltype">Victorian hotel · Queen Anne Rd</span></td>
+      <td><span class="lname">Chatham Gables Inn</span><br><span class="ltype">B&amp;B · 364 Old Harbor Rd</span></td>
       <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
       <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
       <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
       <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
-      <td><span class="price-band">$$</span><br><span class="price-est">Aug ~$300–450 · Sept ~$225–325 · pool, seasonal</span></td>
-      <td class="bestfor">Victorian charm at a gentler price, walkable to town</td>
-      <td><a href="https://www.google.com/search?q=Queen+Anne+Inn+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Queen+Anne+Inn+Chatham+MA" target="_blank">Map</a></td>
+      <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$300–450 · classic 1839 B&amp;B with pool</span></td>
+      <td class="bestfor">Charming small B&amp;B, quiet, walkable-ish — solid backup to the top two</td>
+      <td><a href="https://www.google.com/search?q=Chatham+Gables+Inn+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Chatham+Gables+Inn+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Chatham Guest Rooms</span><br><span class="ltype">Guesthouse · central, walkable</span></td>
+      <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots fun"><span class="on">●●</span><span class="off">○○○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$$</span><br><span class="price-est">Aug ~$250–400 · 4.8-star, simple &amp; clean</span></td>
+      <td class="bestfor">Clean, well-located value if the B&amp;Bs are full</td>
+      <td><a href="https://www.google.com/search?q=Chatham+Guest+Rooms+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Chatham+Guest+Rooms+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Bow Roof House</span><br><span class="ltype">Historic guesthouse · 59 Queen Anne Rd</span></td>
+      <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
+      <td class="dots"><span class="on">●●●</span><span class="off">○○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$</span><br><span class="price-est">Aug ~$160–260 · 4.7-star, quirky-historic, budget</span></td>
+      <td class="bestfor">No-frills budget charmer — the cheapest well-reviewed bed in town</td>
+      <td><a href="https://www.google.com/search?q=Bow+Roof+House+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Bow+Roof+House+Chatham+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Pleasant Bay Village</span><br><span class="ltype">Resort/motel · Rte 28 (~2.5 mi, car)</span></td>
+      <td class="dots clean"><span class="on">●●●●●</span></td>
+      <td class="dots fun"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●</span><span class="off">○○○</span></td>
+      <td class="dots"><span class="on">●●●●●</span></td>
+      <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$300–500 · 4.8-star, immaculate gardens/pool</span></td>
+      <td class="bestfor">Spotless &amp; quiet with lush grounds — if you don't mind driving to town</td>
+      <td><a href="https://www.google.com/search?q=Pleasant+Bay+Village+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Pleasant+Bay+Village+Chatham+MA" target="_blank">Map</a></td>
     </tr>
     <tr>
       <td><span class="lname">Chatham Motel</span><br><span class="ltype">Budget motel · 1487 Main St (drive to town)</span></td>
@@ -392,7 +427,41 @@
     </tr>
   </table>
   </div>
-  <div class="note sans" style="font-size:.85rem;">📌 How to read it: <b>Clean</b> = housekeeping reputation (your non-negotiable — green dots). <b>Fun</b> = amenities + atmosphere. <b>Convenient</b> = walkability to Main St / beach. <b>Quiet</b> = higher means better sleep; the Wayside trades quiet for being in the middle of everything. Highlighted row = best overall fit for this trip's brief. Sources: <a href="https://www.hyperlocalcapecod.com/guides/where-should-i-stay-in-chatham-ma" target="_blank">HyperLocal Cape Cod lodging guide</a>, <a href="https://www.tripadvisor.com/Hotels-g41499-Chatham_Cape_Cod_Massachusetts-Hotels.html" target="_blank">Tripadvisor Chatham hotels</a>.</div>
+
+  <h2 style="font-size:1.15rem;">⚠️ Screened out — caution or avoid (recent reviews)</h2>
+  <p class="sans" style="font-size:.85rem; color:var(--muted); margin-bottom:8px;">A fresh review-screening pass flagged these. Screening is directional — reviews can be outdated or cherry-picked, so treat as a heads-up, not a verdict.</p>
+  <div class="lodge-wrap">
+  <table class="lodge-table" style="min-width:640px;">
+    <tr><th>Property</th><th>Verdict</th><th>Why (paraphrased from 2024–26 reviews)</th></tr>
+    <tr class="screened">
+      <td><span class="lname">Queen Anne Inn</span></td>
+      <td>⛔ Avoid</td>
+      <td>Recurring "dated/musty" complaints — stained carpets, "ancient" baths, deferred maintenance. Signs of an ownership change ("The Queen Anne of Chatham") — reconfirm renovation status if reconsidering.</td>
+    </tr>
+    <tr class="screened">
+      <td><span class="lname">Surfside Inn</span></td>
+      <td>⚠️ Caution — noise</td>
+      <td>Renovated and steps from the beach, but repeated noise complaints ("loud till 5am," refund refused). Risky for light sleepers on a relaxing trip.</td>
+    </tr>
+    <tr class="screened">
+      <td><span class="lname">Chatham Wayside Inn</span></td>
+      <td>⚠️ Caution — noise/fees</td>
+      <td>Generally clean, but dead-center Main St means street noise; some small/dark ground-floor rooms and disliked add-on fees. If booking, request an upper-floor, non-street room.</td>
+    </tr>
+    <tr class="screened">
+      <td><span class="lname">Chatham Bars Inn</span></td>
+      <td>⚠️ Caution — scale/value</td>
+      <td>Highly rated but a large, busy resort (not intimate) at a big price; scattered service/upkeep gripes at 2,800+ reviews. It's a splurge, not a charmer.</td>
+    </tr>
+    <tr class="screened">
+      <td><span class="lname">Carriage House Inn · Port Fortune Inn · Dolphin of Chatham</span></td>
+      <td>❌ Closed</td>
+      <td>Listed as closed — don't book. ("Cranberry Inn" is now the Chatham Inn Relais &amp; Châteaux.) Verify before relying on any old listing.</td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="note sans" style="font-size:.85rem;">📌 How to read it: <b>Clean</b> = housekeeping reputation (your non-negotiable — green dots). <b>Fun</b> = amenities + atmosphere. <b>Convenient</b> = walkability to Main St / beach. <b>Quiet</b> = higher means better sleep. Highlighted rows = best overall fit for this trip's brief (Old Harbor Inn &amp; Captain's House both scored cleanest). Still confirm cleanliness in the newest reviews before booking. Sources: <a href="https://www.tripadvisor.com/Hotels-g41499-Chatham_Cape_Cod_Massachusetts-Hotels.html" target="_blank">Tripadvisor Chatham hotels</a>, <a href="https://www.hyperlocalcapecod.com/guides/where-should-i-stay-in-chatham-ma" target="_blank">HyperLocal Cape Cod guide</a>, individual Tripadvisor property pages.</div>
 </section>
 
 <!-- ============ TAB 4: NOTES ============ -->
@@ -448,34 +517,85 @@ const ACTS = [
  {n:"Cape Cod Rail Trail", c:"Drive/Walk", r:"Orleans/Wellfleet", d:"Paved, flat former rail line — the gentlest bike ride on the Cape.", b:"Morning before wind picks up.", o:"Rent in Orleans; Nickerson and Salt Pond stretches are the scenic ones.", q:"Cape Cod Rail Trail Orleans MA"},
  {n:"Seal cruise to Monomoy", c:"On the Water", r:"Chatham", d:"60–90 min narrated cruise to sandbars where thousands of gray seals haul out.", b:"Calm mornings; ~$40–50 pp; book a few days ahead.", o:"The no-planning route to a guaranteed wow.", q:"seal cruise Chatham MA"},
  {n:"Whale watch (Dolphin Fleet)", c:"On the Water", r:"Provincetown", d:"3–4 hrs to Stellwagen Bank; humpbacks feed through September.", b:"Morning sailings are calmest; early Sept still prime.", o:"Only if you both have sea legs — it eats half the P-town day.", q:"Dolphin Fleet whale watch Provincetown", link:"https://whalewatch.com", lt:"Website"},
- {n:"Twenty-Eight Atlantic", c:"Food", r:"Harwich · splurge", d:"The Cape's Forbes five-star, at Wequassett Resort — water-view dining room.", b:"Sunset seating; book 2–3 weeks ahead. The celebration dinner.", o:"Local catch + start with oysters. Dress up a bit.", q:"Twenty-Eight Atlantic Harwich MA", link:"https://wequassett.com/twenty-eight-atlantic/", lt:"Website"},
- {n:"Ceraldi", c:"Food", r:"Provincetown · splurge", d:"Seven-course tasting menu of that day's local catch and farms.", b:"Book well ahead; the fine-dining P-town night.", o:"Trust the menu — it changes daily.", q:"Ceraldi Provincetown MA"},
- {n:"Aplaya Kitchen & Tiki Bar", c:"Food", r:"Chatham · fun dinner", d:"Filipino + tiki in Chatham — the fun dinner of the trip.", b:"Book 1–2 weeks ahead in season.", o:"Lumpia, the monkfish loco moco, and a rum drink with an umbrella.", q:"Aplaya Kitchen Tiki Bar Chatham MA"},
- {n:"The Canteen", c:"Food", r:"Provincetown · casual", d:"Casual standout with backyard seats facing the harbor.", b:"Early dinner on the P-town day beats the line.", o:"Cod bánh mì or the lobster roll; add oysters.", q:"The Canteen Provincetown MA"},
- {n:"Chatham Pier Fish Market", c:"Food", r:"Chatham · lunch", d:"Lobster rolls at the working fish pier — eat at picnic tables watching the seals.", b:"Lunch, timed to the boats coming in.", o:"Lobster roll (look for whole claw meat) + chowder.", q:"Chatham Pier Fish Market MA"},
- {n:"Sesuit Harbor Café", c:"Food", r:"Dennis · lunch", d:"The quintessential water's-edge shack, tucked in a boatyard.", b:"Off-peak lunch (11:30 or 2) — lines are real.", o:"The hefty 5–6 oz lobster roll. BYOB; bring cash.", q:"Sesuit Harbor Cafe Dennis MA"},
- {n:"Mac's on the Pier", c:"Food", r:"Wellfleet · oysters", d:"On Wellfleet harbor — the source for the famous briny local oysters.", b:"Late-afternoon oyster stop on the Wellfleet day.", o:"Wellfleet oysters raw with just lemon + the butter-sautéed lobster roll.", q:"Mac's on the Pier Wellfleet MA", link:"https://macsseafood.com", lt:"Website"},
- {n:"Arnold's", c:"Food", r:"Eastham · clam shack", d:"The classic full clam shack on Route 6, near the Seashore beaches.", b:"Lunch on the National Seashore day.", o:"Fried whole-belly clams + onion rings; hot-buttered or cold lobster roll.", q:"Arnold's Lobster Clam Bar Eastham MA"},
- {n:"Provincetown Portuguese Bakery", c:"Food", r:"Provincetown · sweet", d:"Institution from P-town's Portuguese fishing days, 299 Commercial St.", b:"Mid-morning on the P-town day; seasonal (open through fall).", o:"Malasadas WARM, plus a pastéis de nata.", q:"Provincetown Portuguese Bakery", link:"https://provincetownportuguesebakery.com", lt:"Website"},
- {n:"Chatham Candy Manor", c:"Food", r:"Chatham · sweet", d:"Old-school candy shop with hand-dipping in the window.", b:"Any Main Street stroll.", o:"Dark chocolate turtles.", q:"Chatham Candy Manor MA"}
+ // ---- DEDICATED GF+DF STANDOUTS (safest for Daniella) ----
+ {n:"Sweet Izzy", c:"Food", r:"Harwich Port · dessert", meal:["dessert"], gf:"yes", df:"yes", d:"The whole shop is gluten-free AND dairy-free/vegan — the zero-worry dessert stop.", b:"After a beach afternoon or post-dinner.", o:"GF waffle cone + any scoop. Nothing here has gluten or dairy on premises.", q:"Sweet Izzy Harwich Port MA", link:"https://www.sweetizzy.co/", lt:"Website"},
+ {n:"Bol", c:"Food", r:"Wellfleet · breakfast/lunch", meal:["breakfast","lunch"], gf:"mod", df:"yes", d:"Predominantly gluten-free + vegan bowls and waffles (seasonal). Vegan = reliably DF; confirm 100% GF.", b:"Breakfast or lunch on the Wellfleet day.", o:"Smoothie or superfood bowl. Mostly GF/vegan — confirm 100% GF when ordering.", q:"Bol Wellfleet MA"},
+ {n:"Mac's Fish House", c:"Food", r:"Provincetown · lunch/dinner", meal:["lunch","dinner"], gf:"yes", df:"mod", d:"Celiac-aware seafood house — the best-documented dedicated-fryer/prep spot of the Mac's group.", b:"On the P-town day; reservations recommended.", o:"Raw oysters, poke, or GF-fried seafood. Naturally dairy-free; flag dairy allergy.", q:"Mac's Fish House Provincetown MA", link:"https://macsseafood.com/restaurants/", lt:"Website"},
+ {n:"The Lobster Pot", c:"Food", r:"Provincetown · lunch/dinner", meal:["lunch","dinner"], gf:"yes", df:"mod", d:"P-town landmark with a full SEPARATE gluten-free menu and its own prep.", b:"Lunch or an early P-town dinner.", o:"Steamed lobster or tuna sashimi, no butter. Lots of naturally DF seafood.", q:"Lobster Pot Provincetown MA", link:"https://www.ptownlobsterpot.com/menus", lt:"GF menu"},
+ {n:"White Lion Baking Co.", c:"Food", r:"Mashpee · bakery", meal:["breakfast"], gf:"yes", df:"mod", d:"100% dedicated gluten-free bakehouse (no gluten on premises) with DF/vegan items.", b:"Stock up on the way in; keep GF pastries at the inn for mornings.", o:"GF loaf or muffin — ask which are dairy-free/vegan.", q:"White Lion Baking Company Mashpee MA", link:"https://www.whitelionbaking.com/", lt:"Website"},
+ // ---- SEAFOOD w/ dedicated GF fryers (naturally DF) ----
+ {n:"Mac's on the Pier", c:"Food", r:"Wellfleet · lunch/dinner", meal:["lunch","dinner"], gf:"yes", df:"mod", d:"On Wellfleet harbor — the famous briny local oysters, part of the celiac-aware Mac's group.", b:"Late-afternoon oyster stop on the Wellfleet day.", o:"Raw Wellfleet oysters (naturally GF+DF) or GF-fried seafood. Skip the butter roll.", q:"Mac's on the Pier Wellfleet MA", link:"https://macsseafood.com", lt:"Website"},
+ {n:"Mac's Chatham Fish & Lobster", c:"Food", r:"Chatham · lunch/dinner", meal:["lunch","dinner"], gf:"yes", df:"mod", d:"Mac's outpost right near home base — GF-fried classics + a raw bar (Mac's runs dedicated GF fryers; confirm at this location).", b:"Easy GF lunch without leaving Chatham.", o:"Raw bar (naturally GF+DF), or GF-fried clams/fish — confirm the fryer here.", q:"Mac's Chatham Fish Lobster MA", link:"https://macsseafood.com", lt:"Website"},
+ {n:"Mac's Shack", c:"Food", r:"Wellfleet · dinner", meal:["dinner"], gf:"yes", df:"mod", d:"The Mac's sit-down dinner spot — sushi/poke and GF-fried seafood.", b:"Dinner; reservations recommended.", o:"Poke or sushi (naturally GF+DF), or GF-fried seafood — confirm the GF fryer here.", q:"Mac's Shack Wellfleet MA", link:"https://macsseafood.com", lt:"Website"},
+ {n:"Chatham Squire", c:"Food", r:"Chatham · lunch/dinner", meal:["lunch","dinner"], gf:"mod", df:"mod", d:"Beloved rowdy Chatham tavern + raw bar — reportedly added dedicated GF fryers in 2023.", b:"Lively lunch or dinner; gets very busy.", o:"Fish & chips from the (reported) GF fryer + raw bar. Phone-confirm the fryer.", q:"Chatham Squire Chatham MA"},
+ {n:"Guapo's Tortilla Shack", c:"Food", r:"Orleans · lunch/dinner", meal:["lunch","dinner"], gf:"yes", df:"mod", d:"Full gluten-free menu and lots of naturally-GF corn-tortilla options.", b:"Casual lunch or dinner near the Orleans/Eastham cluster.", o:"Shrimp tacos on corn tortillas, no cheese or crema.", q:"Guapo's Tortilla Shack Orleans MA"},
+ {n:"Pizza Barbone", c:"Food", r:"Hyannis · lunch/dinner", meal:["lunch","dinner"], gf:"mod", df:"yes", d:"A rare GF *and* DF pizza: GF crust plus house dairy-free cheese, both made in-house.", b:"Worth a mid-Cape stop on a travel day.", o:"GF crust + dairy-free cheese pizza. GF-friendly (shared oven), not dedicated — flag celiac.", q:"Pizza Barbone Hyannis MA"},
+ // ---- BREAKFAST / COFFEE (inn breakfast may not be GF/DF) ----
+ {n:"Grab-n-Go Health Bar", c:"Food", r:"Provincetown · breakfast/lunch", meal:["breakfast","lunch"], gf:"yes", df:"yes", d:"GF + vegan-focused café — fully dairy-free, easy safe breakfast in P-town.", b:"Morning fuel before the Commercial St stroll.", o:"Açai bowl or zucchini-pesto noodles.", q:"Grab-n-Go Health Bar Provincetown MA"},
+ {n:"Good Friends Cafe", c:"Food", r:"West Dennis · breakfast", meal:["breakfast"], gf:"yes", df:"yes", d:"Breakfast spot with dedicated GF/vegan waffle irons — rare for someone who's both.", b:"Breakfast on a mid-Cape morning.", o:"GF/vegan waffle (dedicated irons) or an omelette, no cheese.", q:"Good Friends Cafe West Dennis MA"},
+ {n:"Sunbird Cape Cod", c:"Food", r:"Orleans · all-day", meal:["breakfast","lunch","dinner"], gf:"yes", df:"yes", d:"Modern all-day café with GF and DF items clearly labeled on the menu.", b:"Breakfast tacos in the morning; also lunch/dinner.", o:"Breakfast tacos — GF/DF options marked; confirm prep.", q:"Sunbird Cape Cod Orleans MA"},
+ {n:"Far Land Provisions", c:"Food", r:"Provincetown · breakfast/lunch", meal:["breakfast","lunch"], gf:"mod", df:"mod", d:"P-town market-café that bakes its own GF bread fresh each morning.", b:"Grab-and-go breakfast; GF bread baked early = less cross-contact.", o:"Breakfast sandwich on GF bread, no cheese.", q:"Far Land Provisions Provincetown MA"},
+ {n:"The Corner Store", c:"Food", r:"Chatham · breakfast/lunch", meal:["breakfast","lunch"], gf:"yes", df:"mod", d:"Chatham's easy GF breakfast — closest safe morning option to home base.", b:"Quick GF breakfast before the day.", o:"GF breakfast burrito, no cheese.", q:"The Corner Store Chatham MA"},
+ {n:"Hot Chocolate Sparrow", c:"Food", r:"Orleans · coffee", meal:["breakfast"], gf:"mod", df:"mod", d:"Orleans coffee-and-candy institution with non-dairy milks and some GF baked goods.", b:"Morning coffee stop.", o:"Latte with oat milk + a GF baked good (mixed bakery — confirm cross-contact).", q:"Hot Chocolate Sparrow Orleans MA"},
+ // ---- THE PLANNED SPOTS, re-checked for GF/DF ----
+ {n:"Twenty-Eight Atlantic", c:"Food", r:"Harwich · splurge dinner", meal:["dinner"], gf:"mod", df:"mod", d:"The Cape's Forbes five-star, at Wequassett Resort — water-view dining room.", b:"Sunset seating; book 2–3 weeks ahead. The celebration dinner.", o:"Grilled native seafood, no butter — call ahead to flag celiac + dairy so they plan the plate.", q:"Twenty-Eight Atlantic Harwich MA", link:"https://wequassett.com/twenty-eight-atlantic/", lt:"Website"},
+ {n:"Ceraldi", c:"Food", r:"Provincetown · splurge dinner", meal:["dinner"], gf:"mod", df:"mod", d:"Seven-course tasting menu of that day's local catch and farms; adapts to dietary needs.", b:"Book well ahead; tell them GF+DF at booking so they build the menu.", o:"Chef-adapted GF/DF tasting — confirm both when you reserve.", q:"Ceraldi Provincetown MA"},
+ {n:"Aplaya Kitchen & Tiki Bar", c:"Food", r:"Chatham · fun dinner", meal:["dinner"], gf:"mod", df:"mod", d:"Filipino + tiki in Chatham — the fun dinner. Some items marked GF; no dedicated GF menu.", b:"Book 1–2 weeks ahead in season.", o:"Tuna poke or chicken adobo over jasmine rice. Confirm cross-contamination.", q:"Aplaya Kitchen Tiki Bar Chatham MA"},
+ {n:"The Canteen", c:"Food", r:"Provincetown · casual", meal:["lunch","dinner"], gf:"mod", df:"mod", d:"Casual harbor-yard standout. ⚠️ One report of a mislabeled 'GF' plate — order carefully.", b:"Early lunch/dinner on the P-town day.", o:"Grilled fish or lobster, no bun/butter. Double-check GF with the kitchen.", q:"The Canteen Provincetown MA"},
+ {n:"Chatham Pier Fish Market", c:"Food", r:"Chatham · lunch", meal:["lunch"], gf:"mod", df:"mod", d:"Lobster at the working fish pier — eat at picnic tables watching the seals.", b:"Lunch, timed to the boats coming in.", o:"Warm lobster (no butter) or raw oysters. Skip fried — shared fryer.", q:"Chatham Pier Fish Market MA"},
+ {n:"Sesuit Harbor Café", c:"Food", r:"Dennis · breakfast/lunch", meal:["breakfast","lunch"], gf:"mod", df:"mod", d:"The quintessential water's-edge shack, tucked in a boatyard.", b:"Off-peak (11:30 or 2) — lines are real. BYOB, bring cash.", o:"Lobster meat over greens (no bun) or the raw bar. Fryer is shared — confirm.", q:"Sesuit Harbor Cafe Dennis MA"},
+ {n:"Arnold's", c:"Food", r:"Eastham · clam shack", meal:["lunch","dinner"], gf:"no", df:"mod", d:"Classic fried-clam shack near the Seashore — but fried-heavy and high cross-contamination.", b:"Great for Mom; tricky for GF.", o:"⚠️ For Daniella: STEAMED lobster or raw clams ONLY — avoid everything fried.", q:"Arnold's Lobster Clam Bar Eastham MA"},
+ {n:"Provincetown Portuguese Bakery", c:"Food", r:"Provincetown · Mom's treat", meal:["breakfast","dessert"], gf:"no", df:"no", d:"P-town institution — but malasadas are fried WHEAT dough.", b:"A Mom stop, not a Daniella one.", o:"❌ Nothing reliably GF/DF here. Pair it with Sweet Izzy so you both get a treat.", q:"Provincetown Portuguese Bakery", link:"https://provincetownportuguesebakery.com", lt:"Website"},
+ {n:"Chatham Candy Manor", c:"Food", r:"Chatham · treat", meal:["dessert"], gf:"mod", df:"mod", d:"Old-school candy shop with hand-dipping in the window.", b:"Any Main Street stroll.", o:"GF Oreos or a plain dark-chocolate piece (shared kitchen; DF only on select dark items).", q:"Chatham Candy Manor MA"}
 ];
 
 // ---- render bank ----
 const bank = document.getElementById('bank');
 const filters = document.getElementById('filters');
 let activeFilter = "All";
+let dietOn = false;      // GF+DF only
+let mealFilter = "all";  // all|breakfast|lunch|dinner
 function maps(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);}
+function mealIcon(m){return {breakfast:"🍳",lunch:"🥪",dinner:"🍽",dessert:"🍦",sweet:"🍦"}[m]||"🍴";}
+function dietBadge(label,v){
+  if(!v) return '';
+  const map={yes:['#2e7d46','✓','reliable options'],mod:['#b8860b','~','some options / can be modified — confirm'],no:['#b3443d','✕','not suitable']};
+  const [col,ic,ti]=map[v]||map.mod;
+  return `<span class="dtag" style="border-color:${col};color:${col}" title="${label}: ${ti}">${label} ${ic}</span>`;
+}
+function foodBadges(a){
+  if(a.c!=="Food") return '';
+  const meals=(a.meal||[]).map(m=>`<span class="mtag">${mealIcon(m)} ${m}</span>`).join('');
+  return `<div class="fbadges">${meals}${dietBadge('GF',a.gf)}${dietBadge('DF',a.df)}</div>`;
+}
+function passes(a){
+  if(activeFilter!=="All" && a.c!==activeFilter) return false;
+  const dietActive = dietOn || mealFilter!=="all";
+  if(dietActive){
+    if(a.c!=="Food") return false;
+    if(dietOn && (a.gf==="no" || a.df==="no")) return false;
+    if(mealFilter!=="all" && !(a.meal||[]).includes(mealFilter)) return false;
+  }
+  return true;
+}
 function renderFilters(){
   const cats = ["All", ...Object.keys(CATS)];
-  filters.innerHTML = cats.map(c=>`<button class="fbtn ${c===activeFilter?'active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+  filters.innerHTML =
+    cats.map(c=>`<button class="fbtn ${c===activeFilter?'active':''}" onclick="setFilter('${c}')">${c}</button>`).join('')
+    + `<span class="fsep"></span>`
+    + `<button class="fbtn diet ${dietOn?'active':''}" onclick="toggleDiet()" title="Show only spots with real gluten-free AND dairy-free options">🌱 GF+DF</button>`
+    + ['breakfast','lunch','dinner'].map(m=>`<button class="fbtn ${mealFilter===m?'active':''}" onclick="setMeal('${m}')">${mealIcon(m)} ${m[0].toUpperCase()+m.slice(1)}</button>`).join('');
 }
 function setFilter(c){activeFilter=c; renderFilters(); renderBank();}
+function toggleDiet(){dietOn=!dietOn; renderFilters(); renderBank();}
+function setMeal(m){mealFilter = (mealFilter===m?"all":m); renderFilters(); renderBank();}
 function renderBank(){
   bank.innerHTML = ACTS.map((a,i)=>{
-    if(activeFilter!=="All" && a.c!==activeFilter) return '';
+    if(!passes(a)) return '';
     return `<div class="act" draggable="true" data-i="${i}" ondragstart="dragStart(event)" ondragend="dragEnd(event)">
       <span class="cat" style="background:${CATS[a.c]}">${a.c}</span>
       <h4>${a.n}</h4><div class="region">${a.r}</div>
+      ${foodBadges(a)}
       <p>${a.d}</p>
       <div class="best sans">⏰ <b>Best time:</b> ${a.b}</div>
       ${a.o?`<div class="order sans">💡 <b>${a.c==='Food'?'Order':'Tip'}:</b> ${a.o}</div>`:''}
@@ -550,7 +670,15 @@ const META = {
  "Aplaya Kitchen & Tiki Bar":{p:2.5,s:["e"],meal:"dinner",$:120}, "The Canteen":{p:5.5,s:["a","e"],meal:"dinner",$:70},
  "Chatham Pier Fish Market":{p:2.5,s:["a"],meal:"lunch",$:60}, "Sesuit Harbor Café":{p:1,s:["a"],meal:"lunch",$:65},
  "Mac's on the Pier":{p:4.5,s:["a","e"],meal:"lunch",$:70}, "Arnold's":{p:3.5,s:["a"],meal:"lunch",$:60},
- "Provincetown Portuguese Bakery":{p:5.5,s:["m","a"],meal:"sweet",$:15}, "Chatham Candy Manor":{p:2.5,s:["m","a","e"],meal:"sweet",$:15}
+ "Provincetown Portuguese Bakery":{p:5.5,s:["m","a"],meal:"sweet",$:15}, "Chatham Candy Manor":{p:2.5,s:["m","a","e"],meal:"sweet",$:15},
+ "Sweet Izzy":{p:1.8,s:["a","e"],meal:"sweet",$:20}, "Bol":{p:4.5,s:["m","a"],meal:"lunch",$:40},
+ "Mac's Fish House":{p:5.5,s:["a","e"],meal:"dinner",$:70}, "The Lobster Pot":{p:5.5,s:["a","e"],meal:"dinner",$:80},
+ "White Lion Baking Co.":{p:0.3,s:["m"],meal:"breakfast",$:20}, "Mac's Chatham Fish & Lobster":{p:2.5,s:["a","e"],meal:"lunch",$:55},
+ "Mac's Shack":{p:4.5,s:["e"],meal:"dinner",$:90}, "Chatham Squire":{p:2.5,s:["a","e"],meal:"dinner",$:65},
+ "Guapo's Tortilla Shack":{p:3,s:["a","e"],meal:"dinner",$:45}, "Pizza Barbone":{p:1.2,s:["a","e"],meal:"dinner",$:45},
+ "Grab-n-Go Health Bar":{p:5.5,s:["m","a"],meal:"breakfast",$:30}, "Good Friends Cafe":{p:1,s:["m"],meal:"breakfast",$:30},
+ "Sunbird Cape Cod":{p:3,s:["m","a","e"],meal:"breakfast",$:40}, "Far Land Provisions":{p:5.5,s:["m","a"],meal:"breakfast",$:30},
+ "The Corner Store":{p:2.5,s:["m","a"],meal:"breakfast",$:25}, "Hot Chocolate Sparrow":{p:3,s:["m"],meal:"breakfast",$:20}
 };
 function dayCost(day){
   const all = [...day.morning, ...day.afternoon, ...day.evening, ...day.food];
