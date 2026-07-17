@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cape Cod with Mom — Trip Planner</title>
+<style>
+  :root{
+    --navy:#1f3a52; --navy2:#2c4f6e; --sea:#3d7ea6; --sand:#f6f1e7; --sand2:#efe7d7;
+    --card:#ffffff; --ink:#22303c; --muted:#6b7a88; --accent:#c96f4a; --accent2:#e0895f;
+    --green:#4a7c59; --line:#e2d9c8; --chip:#eaf2f7;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:Georgia,'Times New Roman',serif; background:var(--sand); color:var(--ink); line-height:1.55;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;}
+  header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,var(--sea) 100%); color:#fff; padding:34px 28px 26px; text-align:center;}
+  header h1{font-size:1.9rem; letter-spacing:.5px; font-weight:normal;}
+  header .sub{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; opacity:.85; margin-top:8px; font-size:.95rem;}
+  .tabs{display:flex; justify-content:center; gap:0; background:var(--navy); position:sticky; top:0; z-index:50;}
+  .tab-btn{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:none; border:none; color:#cfdce6; padding:14px 26px; font-size:.95rem; cursor:pointer; border-bottom:3px solid transparent;}
+  .tab-btn.active{color:#fff; border-bottom-color:var(--accent2); font-weight:600;}
+  .tab-btn:hover{color:#fff;}
+  main{max-width:1080px; margin:0 auto; padding:26px 18px 70px;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  h2{font-weight:normal; color:var(--navy); font-size:1.4rem; margin:26px 0 12px; border-bottom:2px solid var(--line); padding-bottom:6px;}
+  h3{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:1.02rem; color:var(--navy);}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0 4px;}
+  .chip{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); color:#fff; border-radius:999px; padding:5px 14px; font-size:.82rem;}
+  /* window comparison */
+  .windows{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px;}
+  .window{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px;}
+  .window.rec{border:2px solid var(--green);}
+  .window .tag{font-family:-apple-system,sans-serif; display:inline-block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:#fff; background:var(--sea); border-radius:4px; padding:3px 8px; margin-bottom:8px;}
+  .window.rec .tag{background:var(--green);}
+  .window ul{list-style:none; margin-top:8px;}
+  .window li{font-size:.92rem; padding:4px 0; border-bottom:1px dashed var(--line);}
+  .window li:last-child{border:none;}
+  .window li b{color:var(--navy);}
+  /* day cards */
+  .day{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--sea); border-radius:10px; padding:16px 18px; margin:12px 0;}
+  .day h3{margin-bottom:6px;}
+  .day .slot{margin:7px 0; font-size:.95rem;}
+  .day .slot b{font-family:-apple-system,sans-serif; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); display:inline-block; width:86px;}
+  .day .meals{font-size:.85rem; color:var(--muted); margin-top:8px; font-style:italic;}
+  /* book-ahead */
+  table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:.92rem;}
+  th,td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--line);}
+  th{font-family:-apple-system,sans-serif; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; background:var(--sand2); color:var(--navy);}
+  td input[type=checkbox]{transform:scale(1.25);}
+  /* bank */
+  .filters{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .fbtn{font-family:-apple-system,sans-serif; border:1px solid var(--sea); background:#fff; color:var(--sea); border-radius:999px; padding:6px 14px; font-size:.83rem; cursor:pointer;}
+  .fbtn.active{background:var(--sea); color:#fff;}
+  .bank-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px;}
+  .act{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; cursor:grab; position:relative;}
+  .act:active{cursor:grabbing;}
+  .act.dragging{opacity:.45;}
+  .act .cat{font-family:-apple-system,sans-serif; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:#fff; border-radius:4px; padding:2px 8px; display:inline-block; margin-bottom:6px;}
+  .act h4{font-family:-apple-system,sans-serif; font-size:1rem; color:var(--navy); margin-bottom:2px;}
+  .act .region{font-family:-apple-system,sans-serif; font-size:.75rem; color:var(--muted); margin-bottom:6px;}
+  .act p{font-size:.88rem; margin-bottom:6px;}
+  .act .best,.act .order{font-size:.83rem; margin:3px 0;}
+  .act .best b{color:var(--green);} .act .order b{color:var(--accent);}
+  .act .links{margin-top:8px; display:flex; gap:10px; flex-wrap:wrap;}
+  .act .links a{font-family:-apple-system,sans-serif; font-size:.78rem; color:var(--sea); text-decoration:none; border:1px solid var(--chip); background:var(--chip); border-radius:6px; padding:3px 9px;}
+  .act .links a:hover{background:var(--sea); color:#fff;}
+  .addrow{margin-top:9px; display:flex; gap:6px; align-items:center;}
+  .addrow span{font-family:-apple-system,sans-serif; font-size:.72rem; color:var(--muted);}
+  .addrow button{font-family:-apple-system,sans-serif; font-size:.72rem; border:1px solid var(--line); background:var(--sand2); border-radius:5px; padding:3px 8px; cursor:pointer;}
+  .addrow button:hover{background:var(--accent2); color:#fff; border-color:var(--accent2);}
+  /* planner */
+  .planner{background:var(--navy); border-radius:14px; padding:18px; margin:18px 0 26px; position:sticky; top:52px; z-index:40;}
+  .planner h3{color:#fff; margin-bottom:4px;}
+  .planner .hint{font-family:-apple-system,sans-serif; color:#b9cbd9; font-size:.8rem; margin-bottom:12px;}
+  .slots{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  .dropzone{background:rgba(255,255,255,.08); border:2px dashed rgba(255,255,255,.35); border-radius:10px; min-height:92px; padding:8px;}
+  .dropzone.over{background:rgba(224,137,95,.25); border-color:var(--accent2);}
+  .dropzone .zlabel{font-family:-apple-system,sans-serif; font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; color:#cfdce6; margin-bottom:6px; text-align:center;}
+  .planned{font-family:-apple-system,sans-serif; background:#fff; border-radius:7px; padding:5px 8px; font-size:.78rem; color:var(--ink); margin:4px 0; display:flex; justify-content:space-between; align-items:center; gap:6px;}
+  .planned button{border:none; background:none; color:var(--accent); font-weight:bold; cursor:pointer; font-size:.85rem;}
+  .planner .pactions{margin-top:10px; text-align:right;}
+  .planner .pactions button{font-family:-apple-system,sans-serif; font-size:.78rem; border:1px solid rgba(255,255,255,.4); background:none; color:#e6eef4; border-radius:6px; padding:5px 12px; cursor:pointer; margin-left:8px;}
+  .planner .pactions button:hover{background:rgba(255,255,255,.15);}
+  .note{background:var(--sand2); border-left:4px solid var(--accent); border-radius:6px; padding:12px 14px; font-size:.9rem; margin:14px 0;}
+  /* saved days */
+  .saved-wrap{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 24px;}
+  .saved-wrap h3{margin-bottom:2px;}
+  .saved-wrap .shint{font-family:-apple-system,sans-serif; font-size:.78rem; color:var(--muted); margin-bottom:10px;}
+  .saved-empty{font-family:-apple-system,sans-serif; font-size:.85rem; color:var(--muted); font-style:italic;}
+  .sday{border:1px solid var(--line); border-left:4px solid var(--sea); border-radius:9px; padding:10px 12px; margin:10px 0; background:var(--sand);}
+  .sday .stitle{font-family:-apple-system,sans-serif; font-weight:600; color:var(--navy); font-size:.9rem; outline:none; border-bottom:1px dashed transparent;}
+  .sday .stitle:focus{border-bottom-color:var(--sea);}
+  .sday .sitems{font-family:-apple-system,sans-serif; font-size:.8rem; color:var(--ink); margin:5px 0;}
+  .sday .scost{font-family:-apple-system,sans-serif; font-size:.78rem; color:var(--accent); font-weight:600;}
+  .sday textarea{width:100%; margin-top:7px; font-family:-apple-system,sans-serif; font-size:.82rem; border:1px solid var(--line); border-radius:6px; padding:7px 9px; min-height:44px; resize:vertical; background:#fff; color:var(--ink);}
+  .sday .sbtns{margin-top:6px; display:flex; gap:6px;}
+  .sday .sbtns button{font-family:-apple-system,sans-serif; font-size:.72rem; border:1px solid var(--line); background:#fff; border-radius:5px; padding:3px 9px; cursor:pointer; color:var(--navy);}
+  .sday .sbtns button:hover{background:var(--chip);}
+  .saved-actions{margin-top:10px;}
+  .saved-actions button{font-family:-apple-system,sans-serif; font-size:.78rem; border:1px solid var(--sea); background:var(--sea); color:#fff; border-radius:6px; padding:6px 12px; cursor:pointer;}
+  /* preview modal */
+  .overlay{position:fixed; inset:0; background:rgba(31,58,82,.55); z-index:90; display:flex; align-items:center; justify-content:center; padding:18px;}
+  .modal{background:var(--sand); border-radius:14px; max-width:640px; width:100%; max-height:88vh; overflow-y:auto; padding:24px 26px; box-shadow:0 12px 40px rgba(0,0,0,.35);}
+  .modal h3{font-size:1.2rem; margin-bottom:2px;}
+  .modal .msub{font-family:-apple-system,sans-serif; font-size:.8rem; color:var(--muted); margin-bottom:14px;}
+  .tline{border-left:3px solid var(--sea); margin:10px 0 18px 6px; padding-left:16px;}
+  .tblock{margin:10px 0;}
+  .tblock .tl{font-family:-apple-system,sans-serif; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:3px;}
+  .tblock .ti{font-family:-apple-system,sans-serif; font-size:.92rem; padding:2px 0;}
+  .tblock .ti .rg{color:var(--muted); font-size:.78rem;}
+  .tblock .empty{color:var(--muted); font-style:italic; font-size:.85rem;}
+  .chatnote{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-top:6px;}
+  .chatnote .cn-head{font-family:-apple-system,sans-serif; font-weight:600; color:var(--navy); font-size:.9rem; margin-bottom:6px;}
+  .chatnote p{font-size:.9rem; margin:6px 0;}
+  .chatnote .verdict{font-family:-apple-system,sans-serif; font-size:.95rem; margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);}
+  .modal .mclose{font-family:-apple-system,sans-serif; margin-top:16px; width:100%; padding:9px; border:none; border-radius:8px; background:var(--navy); color:#fff; font-size:.9rem; cursor:pointer;}
+  .srcs{font-size:.88rem;}
+  .srcs a{color:var(--sea);}
+  .srcs li{margin:6px 0 6px 18px;}
+  /* costs */
+  .daycost{font-family:-apple-system,sans-serif; font-size:.8rem; background:var(--chip); color:var(--navy); border-radius:6px; padding:5px 10px; margin-top:9px; display:inline-block;}
+  .daycost b{color:var(--accent);}
+  .totalbox{background:var(--navy); color:#fff; border-radius:12px; padding:18px 20px; margin:16px 0;}
+  .totalbox h3{color:#fff; margin-bottom:8px;}
+  .totalbox table{background:transparent; border:none; color:#fff; font-size:.9rem;}
+  .totalbox th{background:rgba(255,255,255,.1); color:#cfdce6;}
+  .totalbox td{border-bottom:1px solid rgba(255,255,255,.15);}
+  .totalbox .grand{font-family:-apple-system,sans-serif; font-size:1rem; margin-top:10px; padding-top:10px; border-top:2px solid rgba(255,255,255,.3);}
+  .costbar{font-family:-apple-system,sans-serif; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.3); border-radius:8px; color:#fff; padding:8px 14px; margin-top:12px; font-size:.88rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;}
+  .costbar b{color:#ffd9a8;}
+  /* lodging */
+  .lodge-wrap{overflow-x:auto; margin-top:12px;}
+  .lodge-table{min-width:880px;}
+  .lodge-table td{vertical-align:top;}
+  .lodge-table .lname{font-family:-apple-system,sans-serif; font-weight:600; color:var(--navy); font-size:.93rem;}
+  .lodge-table .ltype{font-family:-apple-system,sans-serif; font-size:.75rem; color:var(--muted);}
+  .dots{font-size:.85rem; letter-spacing:1px; white-space:nowrap;}
+  .dots .on{color:var(--sea);} .dots .off{color:#d5cbb8;}
+  .dots.clean .on{color:var(--green);} .dots.fun .on{color:var(--accent);}
+  .price-band{font-family:-apple-system,sans-serif; font-size:.85rem; color:var(--navy); white-space:nowrap;}
+  .price-est{font-family:-apple-system,sans-serif; font-size:.74rem; color:var(--muted);}
+  .lodge-table a{font-family:-apple-system,sans-serif; font-size:.76rem; color:var(--sea);}
+  .bestfor{font-size:.8rem; color:var(--muted); font-style:italic;}
+  tr.pick td{background:#f0f6ee;}
+  footer{text-align:center; font-family:-apple-system,sans-serif; font-size:.78rem; color:var(--muted); padding:24px;}
+  @media(max-width:760px){ .windows{grid-template-columns:1fr;} .slots{grid-template-columns:repeat(2,1fr);} .planner{position:static;} }
+</style>
+</head>
+<body>
+<header>
+  <h1>Cape Cod with Mom</h1>
+  <div class="sub">Thu Aug 20 → Mon Aug 24 · 4 nights · Chatham base · driving from NYC · relaxed — beaches, food, strolls, towns &amp; culture</div>
+  <div class="chips">
+    <span class="chip">🗓 Aug 20–24 — home Monday, 4 full days before Mom's wedding (Sat Aug 29)</span>
+    <span class="chip">🏠 Inn/B&amp;B or hotel — must be spotless</span>
+    <span class="chip">🚗 5–6 hr drive</span>
+    <span class="chip">🦞 One splurge dinner</span>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab(0,this)">Proposed Itinerary</button>
+  <button class="tab-btn" onclick="showTab(1,this)">Activity Bank + Day Planner</button>
+  <button class="tab-btn" onclick="showTab(2,this)">Lodging Scores</button>
+  <button class="tab-btn" onclick="showTab(3,this)">📓 Notes</button>
+</div>
+
+<main>
+<!-- ============ TAB 1: ITINERARY ============ -->
+<section class="tab-panel active" id="tab0">
+
+  <h2>The dates</h2>
+  <div class="windows">
+    <div class="window rec">
+      <span class="tag sans">✓ Chosen · home ≥3 days before the wedding</span>
+      <h3>Thu Aug 20 → Mon Aug 24</h3>
+      <ul>
+        <li><b>The rule:</b> Mom needs at least 3 full days at home before the wedding (Sat Aug 29) — home Monday gives her Tue–Fri, four full days</li>
+        <li><b>Atmosphere:</b> peak season — everything open and humming; includes one weekend on the Cape</li>
+        <li><b>Crowds:</b> Thu arrival beats the Friday crush; Mon departure beats the Sunday exodus</li>
+        <li><b>⏰ Act now:</b> ~5 weeks out — book lodging THIS WEEK, the two key dinners right after</li>
+      </ul>
+    </div>
+    <div class="window">
+      <span class="tag sans">Backup · after Labor Day</span>
+      <h3>Tue Sept 8 → Sat Sept 12</h3>
+      <ul>
+        <li>Fallback if plans shift — cheaper, calmer, warmest ocean, no wedding math</li>
+        <li>Everything in this planner works unchanged for this window</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Day by day</h2>
+  <div class="day"><h3>Day 1 · Thu Aug 20 — Arrival via the pretty way</h3>
+    <div class="slot"><b>Morning</b> Leave NYC by ~8am; over the bridge by early afternoon.</div>
+    <div class="slot"><b>Afternoon</b> Enter on Route 6A through Sandwich — Heritage Museums &amp; Gardens or the Glass Museum, antique-shop east.</div>
+    <div class="slot"><b>Evening</b> Check into Chatham; easy Main Street dinner; sunset walk to Chatham Lighthouse.</div>
+    <div class="meals">Arrival day stays light on purpose.</div>
+    <div class="daycost">💵 Est. day cost for two: <b>~$240</b> — gas/tolls $50 · lunch en route $40 · Heritage Gardens $50 · dinner $100</div>
+  </div>
+  <div class="day"><h3>Day 2 · Fri Aug 21 — Chatham, properly</h3>
+    <div class="slot"><b>Morning</b> Inn breakfast, Main Street stroll — shops, galleries, coffee, Candy Manor.</div>
+    <div class="slot"><b>Afternoon</b> Fish pier seals around midday; beach hours at Lighthouse Beach (or the seal cruise).</div>
+    <div class="slot"><b>Evening</b> Aplaya Kitchen &amp; Tiki Bar — the fun dinner.</div>
+    <div class="meals">inn / clam-shack lunch / Aplaya</div>
+    <div class="daycost">💵 Est. day cost for two: <b>~$200</b> — coffee + Candy Manor $20 · pier lunch $60 · Aplaya $120 · beach $0 &nbsp;(+$90 if you add the seal cruise)</div>
+  </div>
+  <div class="day"><h3>Day 3 · Sat Aug 22 — Provincetown day</h3>
+    <div class="slot"><b>Morning</b> Drive up (~1 hr) with the Marconi overlook stop in Wellfleet.</div>
+    <div class="slot"><b>Afternoon</b> Commercial Street galleries + shops, Pilgrim Monument museum, Portuguese Bakery malasadas.</div>
+    <div class="slot"><b>Evening</b> Early dinner at The Canteen (casual) or Ceraldi (tasting, book ahead) → drive back.</div>
+    <div class="meals">Park once (Grace Hall lot) and walk everything. Saturday in P-town is lively — arrive by 10am to park easily.</div>
+    <div class="daycost">💵 Est. day cost for two: <b>~$160</b> — gas $15 · parking $15 · malasadas $15 · Pilgrim Monument $45 · The Canteen $70 &nbsp;(Ceraldi swap: +$150)</div>
+  </div>
+  <div class="day"><h3>Day 4 · Sun Aug 23 — Outer Cape slow day + the splurge</h3>
+    <div class="slot"><b>Morning</b> National Seashore — Nauset Light + Coast Guard Beach walk (~$25 parking covers the day).</div>
+    <div class="slot"><b>Afternoon</b> Wellfleet: gallery loop, harbor oysters at Mac's, Uncle Tim's Bridge. Porch hour back at the inn.</div>
+    <div class="slot"><b>Evening</b> Twenty-Eight Atlantic at Wequassett — the celebration dinner.</div>
+    <div class="meals">inn / oysters in Wellfleet / Twenty-Eight Atlantic</div>
+    <div class="daycost">💵 Est. day cost for two: <b>~$325</b> — Seashore parking $25 · Wellfleet oysters $50 · Twenty-Eight Atlantic $250</div>
+  </div>
+  <div class="day"><h3>Day 5 · Mon Aug 24 — Departure</h3>
+    <div class="slot"><b>Morning</b> Checkout ~11am; one last beach walk or Main Street coffee.</div>
+    <div class="slot"><b>Afternoon</b> Monday exodus is gentle — home by evening with four full days before the wedding. Optional lunch stop in Falmouth or Sandwich.</div>
+    <div class="daycost">💵 Est. day cost for two: <b>~$115</b> — coffee $15 · lunch stop $50 · gas/tolls $50</div>
+  </div>
+
+  <div class="totalbox">
+    <h3>💰 Trip total, estimated (2 people, 4 nights)</h3>
+    <table>
+      <tr><th>Bucket</th><th>Estimate</th><th>Notes</th></tr>
+      <tr><td>Activities + food + gas (Days 1–5 above)</td><td>~$1,040</td><td>+$90 seal cruise, +$150 Ceraldi if added</td></tr>
+      <tr><td>Lodging — 4 nights, Aug 20–24 (peak, incl. Sat)</td><td>$1,600–2,600</td><td>mid-range inn/B&amp;B or hotel (see Lodging tab)</td></tr>
+      <tr><td>Buffer (10–15%)</td><td>~$300–400</td><td>the Cape finds ways</td></tr>
+    </table>
+    <div class="grand">➞ <b>Aug 20–24: roughly $2,900–4,000 all-in for two.</b> Splurge lodging (Chatham Bars Inn / Wequassett) adds $1,000–2,500. Fallback Sept window would run ~$600–800 less.</div>
+  </div>
+
+  <h2>Book-ahead list</h2>
+  <table>
+    <tr><th></th><th>Item</th><th>When to book</th></tr>
+    <tr><td><input type="checkbox"></td><td>Lodging in Chatham (inn/B&amp;B or hotel — vet cleanliness in recent reviews; includes a Sat night, so expect minimum-stay rules)</td><td><b>THIS WEEK</b> — Aug 20–24 is peak, ~5 wks out</td></tr>
+    <tr><td><input type="checkbox"></td><td>Twenty-Eight Atlantic (splurge dinner, Sun Aug 23)</td><td>now–late July</td></tr>
+    <tr><td><input type="checkbox"></td><td>Aplaya Kitchen &amp; Tiki Bar (Fri Aug 21)</td><td>now–early August (Friday night books fast)</td></tr>
+    <tr><td><input type="checkbox"></td><td>Seal cruise from Chatham (optional, Fri Aug 21)</td><td>early August</td></tr>
+  </table>
+  <div class="note">☔ <b>Backups:</b> rainy day → Heritage Museums, Glass Museum, P-town galleries + long lunch. Too tired → Lighthouse Beach + a book. Reservation falls through → The Pheasant (Dennis) or Leonessa (Yarmouth Port).</div>
+
+  <h2>Research links</h2>
+  <ul class="srcs sans">
+    <li><a href="https://www.nps.gov/caco/index.htm" target="_blank">Cape Cod National Seashore — official (NPS)</a> — beach status, parking, ranger programs</li>
+    <li><a href="https://www.capeguide.com/traveling-from-new-york-to-cape-cod/" target="_blank">NYC → Cape Cod transport options (Cape Guide)</a></li>
+    <li><a href="https://www.adventurouskate.com/towns-of-cape-cod/" target="_blank">All 16 Cape towns compared (Adventurous Kate)</a></li>
+    <li><a href="https://www.bostonmagazine.com/restaurants/best-restaurants-cape-cod/" target="_blank">Must-visit Cape restaurants (Boston Magazine)</a></li>
+    <li><a href="https://newengland.com/travel/massachusetts/best-cape-cod-lobster-rolls/" target="_blank">Best lobster rolls on the Cape (Yankee)</a></li>
+    <li><a href="https://www.tideschart.com/United-States/Massachusetts/Barnstable-County/Skaket-Beach/" target="_blank">Skaket Beach tide chart</a> — time the low-tide flats walk</li>
+    <li><a href="https://www.atlasobscura.com/places/provincetown-portuguese-bakery-provincetown-massachusetts" target="_blank">Provincetown Portuguese Bakery (Atlas Obscura)</a></li>
+  </ul>
+</section>
+
+<!-- ============ TAB 2: BANK + PLANNER ============ -->
+<section class="tab-panel" id="tab1">
+
+  <div class="planner" id="planner">
+    <h3>🗓 Sample Day Planner</h3>
+    <div class="hint">Drag any card into a slot — or use the little M / A / E / 🍽 buttons on each card. Build a day, screenshot it, repeat.</div>
+    <div class="slots">
+      <div class="dropzone" data-slot="morning"><div class="zlabel">Morning</div></div>
+      <div class="dropzone" data-slot="afternoon"><div class="zlabel">Afternoon</div></div>
+      <div class="dropzone" data-slot="evening"><div class="zlabel">Evening</div></div>
+      <div class="dropzone" data-slot="food"><div class="zlabel">🍽 Food picks</div></div>
+    </div>
+    <div class="costbar" id="costbar"><span>💵 Est. sample-day cost for two: <b>$0</b> — add activities to see the tab build.</span></div>
+    <div class="pactions"><button onclick="previewPlan()" style="background:var(--accent2); border-color:var(--accent2); font-weight:600;">👁 Preview day + match-up note</button><button onclick="saveDay()" style="background:#4a7c59; border-color:#4a7c59; font-weight:600;">💾 Save day to notes</button><button onclick="copyPlan()">Copy day as text</button><button onclick="clearPlan()">Clear day</button></div>
+  </div>
+
+  <h2>Activity bank</h2>
+  <div class="filters" id="filters"></div>
+  <div class="bank-grid" id="bank"></div>
+
+  <div class="note sans" style="font-size:.83rem;">Compiled July 16, 2026 — hours, prices, and seasonal schedules shift; tap the Map/Info links to re-verify before you go.</div>
+</section>
+
+<!-- ============ TAB 3: LODGING ============ -->
+<section class="tab-panel" id="tab2">
+  <h2>Lodging scoreboard — Chatham base</h2>
+  <p class="sans" style="font-size:.88rem; color:var(--muted); margin-bottom:4px;">Scores are 1–5, synthesized from guide write-ups and review patterns — <b>directional, not gospel</b>. Cleanliness is the non-negotiable, so before booking any of these, sort recent reviews (last 6 months) by lowest and scan for housekeeping complaints. Nightly estimates are for two, room-only unless noted; verify current rates.</p>
+  <div class="lodge-wrap">
+  <table class="lodge-table">
+    <tr><th>Property</th><th>🧼 Clean</th><th>🎉 Fun</th><th>📍 Convenient</th><th>🤫 Quiet</th><th>💵 Price / night</th><th>Best for</th><th>Links</th></tr>
+    <tr class="pick">
+      <td><span class="lname">Captain's House Inn</span><br><span class="ltype">Luxury B&amp;B · Old Harbor Rd · ⭐ top pick for this trip</span></td>
+      <td class="dots clean"><span class="on">●●●●●</span></td>
+      <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●●</span></td>
+      <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$450–650 · Sept ~$300–450 · gourmet breakfast incl.</span></td>
+      <td class="bestfor">Immaculate reputation, elegant, quiet — the mother-daughter sweet spot</td>
+      <td><a href="https://www.tripadvisor.com/Hotel_Review-g41499-d114159-Reviews-Captain_s_House_Inn-Chatham_Cape_Cod_Massachusetts.html" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Captains+House+Inn+Chatham+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Chatham Bars Inn</span><br><span class="ltype">Iconic oceanfront resort · Shore Rd</span></td>
+      <td class="dots clean"><span class="on">●●●●●</span></td>
+      <td class="dots fun"><span class="on">●●●●●</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$$$$</span><br><span class="price-est">Aug ~$800–1,200+ · Sept ~$500–800</span></td>
+      <td class="bestfor">The full-occasion splurge: private beach, pools, spa</td>
+      <td><a href="https://www.tripadvisor.com/Hotel_Review-g41499-d89650-Reviews-Chatham_Bars_Inn-Chatham_Cape_Cod_Massachusetts.html" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Chatham+Bars+Inn+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Wequassett Resort</span><br><span class="ltype">Waterfront resort · Harwich (10 min out)</span></td>
+      <td class="dots clean"><span class="on">●●●●●</span></td>
+      <td class="dots fun"><span class="on">●●●●●</span></td>
+      <td class="dots"><span class="on">●●●</span><span class="off">○○</span></td>
+      <td class="dots"><span class="on">●●●●●</span></td>
+      <td><span class="price-band">$$$$</span><br><span class="price-est">Aug ~$700–1,100 · Sept ~$450–700</span></td>
+      <td class="bestfor">Resort calm + Twenty-Eight Atlantic is downstairs</td>
+      <td><a href="https://wequassett.com" target="_blank">Website</a><br><a href="https://www.google.com/maps/search/?api=1&query=Wequassett+Resort+Harwich+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Chatham Inn (Relais &amp; Châteaux)</span><br><span class="ltype">Five-star boutique inn · 359 Main St</span></td>
+      <td class="dots clean"><span class="on">●●●●●</span></td>
+      <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
+      <td class="dots"><span class="on">●●●●●</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$$$$</span><br><span class="price-est">Aug ~$600–900 · Sept ~$400–600</span></td>
+      <td class="bestfor">Refined, intimate, on Main Street itself</td>
+      <td><a href="https://www.google.com/search?q=Chatham+Inn+Relais+Chateaux+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Chatham+Inn+359+Main+St+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Chatham Wayside Inn</span><br><span class="ltype">Historic boutique hotel · 512 Main St</span></td>
+      <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots fun"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●●</span></td>
+      <td class="dots"><span class="on">●●</span><span class="off">○○○</span></td>
+      <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$400–600 · Sept ~$275–400 · pool + tavern</span></td>
+      <td class="bestfor">Dead center of the action — accept some Main St hum (esp. Fri concerts)</td>
+      <td><a href="https://www.google.com/search?q=Chatham+Wayside+Inn+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Chatham+Wayside+Inn+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Old Harbor Inn</span><br><span class="ltype">B&amp;B · 22 Old Harbor Rd</span></td>
+      <td class="dots clean"><span class="on">●●●●●</span></td>
+      <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$$$</span><br><span class="price-est">Aug ~$350–500 · Sept ~$250–350 · homemade breakfast</span></td>
+      <td class="bestfor">Warm, personal, fireplace-rooms B&amp;B a short stroll from town</td>
+      <td><a href="https://www.google.com/search?q=Old+Harbor+Inn+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Old+Harbor+Inn+Chatham+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Surfside Inn</span><br><span class="ltype">Historic B&amp;B · steps from Lighthouse Beach</span></td>
+      <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots fun"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$$</span><br><span class="price-est">Aug ~$300–475 · Sept ~$225–350 · wine &amp; cheese porch hour</span></td>
+      <td class="bestfor">Beach-first value with a sociable porch (seasonal)</td>
+      <td><a href="https://www.google.com/search?q=Surfside+Inn+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Surfside+Inn+Chatham+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Hawthorne Motel</span><br><span class="ltype">Waterfront motel · 196 Shore Rd</span></td>
+      <td class="dots clean"><span class="on">●●●●●</span></td>
+      <td class="dots fun"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$$</span><br><span class="price-est">Aug ~$350–500 · Sept ~$250–375 · seasonal, books out FAST</span></td>
+      <td class="bestfor">Simple + spotless with a private-beach view; motel, not frills</td>
+      <td><a href="https://www.google.com/search?q=Hawthorne+Motel+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Hawthorne+Motel+Chatham+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Queen Anne Inn</span><br><span class="ltype">Victorian hotel · Queen Anne Rd</span></td>
+      <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots fun"><span class="on">●●●</span><span class="off">○○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$$</span><br><span class="price-est">Aug ~$300–450 · Sept ~$225–325 · pool, seasonal</span></td>
+      <td class="bestfor">Victorian charm at a gentler price, walkable to town</td>
+      <td><a href="https://www.google.com/search?q=Queen+Anne+Inn+Chatham+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Queen+Anne+Inn+Chatham+MA" target="_blank">Map</a></td>
+    </tr>
+    <tr>
+      <td><span class="lname">Chatham Motel</span><br><span class="ltype">Budget motel · 1487 Main St (drive to town)</span></td>
+      <td class="dots clean"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td class="dots fun"><span class="on">●●</span><span class="off">○○○</span></td>
+      <td class="dots"><span class="on">●●</span><span class="off">○○○</span></td>
+      <td class="dots"><span class="on">●●●●</span><span class="off">○</span></td>
+      <td><span class="price-band">$</span><br><span class="price-est">Aug ~$200–300 · Sept ~$150–225 · pool</span></td>
+      <td class="bestfor">Stretching the budget toward the splurge dinners instead</td>
+      <td><a href="https://www.google.com/search?q=Chatham+Motel+reviews" target="_blank">Reviews</a><br><a href="https://www.google.com/maps/search/?api=1&query=Chatham+Motel+1487+Main+St+MA" target="_blank">Map</a></td>
+    </tr>
+  </table>
+  </div>
+  <div class="note sans" style="font-size:.85rem;">📌 How to read it: <b>Clean</b> = housekeeping reputation (your non-negotiable — green dots). <b>Fun</b> = amenities + atmosphere. <b>Convenient</b> = walkability to Main St / beach. <b>Quiet</b> = higher means better sleep; the Wayside trades quiet for being in the middle of everything. Highlighted row = best overall fit for this trip's brief. Sources: <a href="https://www.hyperlocalcapecod.com/guides/where-should-i-stay-in-chatham-ma" target="_blank">HyperLocal Cape Cod lodging guide</a>, <a href="https://www.tripadvisor.com/Hotels-g41499-Chatham_Cape_Cod_Massachusetts-Hotels.html" target="_blank">Tripadvisor Chatham hotels</a>.</div>
+</section>
+
+<!-- ============ TAB 4: NOTES ============ -->
+<section class="tab-panel" id="tab3">
+  <h2>📓 Trip notes</h2>
+  <div class="saved-wrap">
+    <h3>General notes</h3>
+    <div class="shint">Anything at all — lodging leads, what Mom wants, questions to settle.</div>
+    <textarea id="gnotes" style="width:100%; font-family:-apple-system,sans-serif; font-size:.9rem; border:1px solid var(--line); border-radius:8px; padding:10px 12px; min-height:120px; resize:vertical; background:var(--sand); color:var(--ink);" placeholder="e.g. Mom prefers a bathtub · ask the inn about early check-in · wedding gift still needs buying…"></textarea>
+  </div>
+
+  <div class="saved-wrap" id="savedwrap">
+    <h3>Saved sample days</h3>
+    <div class="shint">✅ Notes and saved days <b>auto-save on this device</b> — close the page, come back, they're here. They don't sync between phones, so when you've settled things, hit <b>Copy all notes</b> and text them over.</div>
+    <div id="savedDays"><div class="saved-empty">Nothing saved yet — build a day in the <b>Activity Bank</b> tab and hit “Save day to notes.”</div></div>
+    <div class="saved-actions"><button onclick="copyAllNotes()">📋 Copy all notes</button></div>
+  </div>
+</section>
+</main>
+
+<footer>Trip Planning project · Cape Cod with Mom · built July 2026</footer>
+
+<script>
+const CATS = {
+  "Beach":     "#3d7ea6",
+  "Town":      "#c96f4a",
+  "Culture":   "#7a5c9e",
+  "Drive/Walk":"#4a7c59",
+  "On the Water":"#2c7f8f",
+  "Food":      "#b3543d"
+};
+const ACTS = [
+ {n:"Lighthouse Beach", c:"Beach", r:"Chatham", d:"Wide, walkable sweep below Chatham Light; sandbars appear at low tide.", b:"Morning before crowds, or golden hour with the lighthouse.", o:"Wading + walking beach, not swimming — currents are strong. Walk from town (lot is 30-min limited).", q:"Lighthouse Beach Chatham MA"},
+ {n:"Coast Guard Beach", c:"Beach", r:"Eastham · Seashore", d:"Regularly ranked among America's best — big Atlantic surf, dunes, the classic outer-Cape look.", b:"Before 10am in August (lot fills); easy after Labor Day.", o:"~$25/car covers all Seashore beaches that day.", q:"Coast Guard Beach Eastham MA", link:"https://www.nps.gov/caco/planyourvisit/coast-guard-beach.htm", lt:"NPS page"},
+ {n:"Nauset Light Beach", c:"Beach", r:"Eastham · Seashore", d:"Dramatic Atlantic beach under the red-and-white Nauset Lighthouse.", b:"Late afternoon — the light on the bluff is the photo.", o:"Pair with Coast Guard Beach on one parking pass.", q:"Nauset Light Beach Eastham MA"},
+ {n:"Nauset Beach", c:"Beach", r:"Orleans", d:"Ten miles of barrier beach — the Cape's classic all-day beach.", b:"Anytime; September water is warmest of the year.", o:"Onion rings + a beach chair is a valid entire afternoon.", q:"Nauset Beach Orleans MA"},
+ {n:"Skaket Beach", c:"Beach", r:"Orleans · bayside", d:"Calm bayside beach; at low tide the water retreats ~a mile, leaving warm flats to stroll.", b:"At or just before low tide; also a famous sunset spot.", o:"Check the tide chart first — the flats ARE the show.", q:"Skaket Beach Orleans MA", link:"https://www.tideschart.com/United-States/Massachusetts/Barnstable-County/Skaket-Beach/", lt:"Tide chart"},
+ {n:"Marconi Beach overlook", c:"Beach", r:"Wellfleet · Seashore", d:"Bluff-top platform where Marconi sent the first US–England wireless message.", b:"15-minute stop en route to Provincetown.", o:"Overlook alone is worth it if you skip the beach.", q:"Marconi Beach Wellfleet MA"},
+ {n:"Chatham Main Street", c:"Town", r:"Chatham", d:"The Cape's most polished stroll: independent shops, galleries, pocket parks.", b:"Mornings for coffee-and-browse; Friday-night band concerts at Kate Gould Park through early Sept.", o:"Chatham Candy Manor: dark-chocolate turtles.", q:"Main Street Chatham MA"},
+ {n:"Chatham Fish Pier", c:"Town", r:"Chatham", d:"Working pier where gray seals gather when boats come in to offload.", b:"Early-to-mid afternoon when boats typically return (ask at the pier).", o:"Watch from the observation deck; snack at the fish market.", q:"Chatham Fish Pier MA"},
+ {n:"Commercial Street", c:"Town", r:"Provincetown", d:"Three miles of galleries, shops, street life — the Cape's densest food scene.", b:"A full day; galleries cluster in the East End, openings Friday evenings.", o:"Park once (Grace Hall lot) and walk; never re-park.", q:"Commercial Street Provincetown MA"},
+ {n:"Wellfleet center + harbor", c:"Town", r:"Wellfleet", d:"Tiny and artsy: a few galleries, a bookshop, the harbor, marsh views.", b:"Late afternoon into golden hour.", o:"End with the Uncle Tim's Bridge boardwalk walk.", q:"Wellfleet Harbor MA"},
+ {n:"Orleans Main Street", c:"Town", r:"Orleans", d:"Practical and pleasant — galleries and good coffee, less crowded than Chatham.", b:"Combine with a Nauset or Skaket beach day.", o:"", q:"Main Street Orleans MA"},
+ {n:"Sandwich village", c:"Town", r:"Sandwich", d:"Oldest town on the Cape — Victorian houses, boardwalk, almost no bustle.", b:"Natural first-day or last-day stop, right over the bridge.", o:"", q:"Sandwich MA village"},
+ {n:"Heritage Museums & Gardens", c:"Culture", r:"Sandwich", d:"100 acres of gardens plus Americana: antique autos, folk art, a working 1908 carousel.", b:"Arrival day; gardens best in morning light; 2–3 hrs. Top rainy-day card.", o:"", q:"Heritage Museums and Gardens Sandwich MA", link:"https://heritagemuseumsandgardens.org", lt:"Website"},
+ {n:"Sandwich Glass Museum", c:"Culture", r:"Sandwich", d:"Small, well-done museum on the town's 1800s glass industry.", b:"Pairs with Heritage on the Sandwich stop; ~1 hr.", o:"Time it to a glassblowing demo (on the hour).", q:"Sandwich Glass Museum MA"},
+ {n:"Pilgrim Monument & Museum", c:"Culture", r:"Provincetown", d:"252-ft granite tower — the Pilgrims landed here first. Full-Cape panorama up top.", b:"First thing on the P-town day, before feet get tired.", o:"116 steps + ramps, or take the inclined elevator / just do the museum.", q:"Pilgrim Monument Provincetown MA", link:"https://www.pilgrim-monument.org", lt:"Website"},
+ {n:"Chatham Lighthouse", c:"Culture", r:"Chatham", d:"Active Coast Guard light across from Lighthouse Beach.", b:"Sunset walk from town.", o:"Seasonal tours on limited days if timing lines up.", q:"Chatham Lighthouse MA"},
+ {n:"Nauset Light + Three Sisters", c:"Culture", r:"Eastham", d:"The potato-chip-bag lighthouse, plus three retired wooden lights in a clearing nearby.", b:"Tack onto the Coast Guard Beach morning.", o:"", q:"Nauset Lighthouse Eastham MA"},
+ {n:"P-town East End galleries", c:"Culture", r:"Provincetown", d:"One of America's oldest art colonies — dozens of galleries in a few walkable blocks.", b:"Friday-evening openings if the schedule allows.", o:"", q:"art galleries East End Provincetown MA"},
+ {n:"Route 6A — Old King's Highway", c:"Drive/Walk", r:"Sandwich → Brewster", d:"Tree-tunneled historic road of sea captains' houses, antique shops, general stores.", b:"Arrival or departure leg — the pretty alternative to Route 6.", o:"Classic stop: Brewster General Store.", q:"Route 6A Old Kings Highway Cape Cod"},
+ {n:"Fort Hill Trail", c:"Drive/Walk", r:"Eastham", d:"Easy 1-mile loop over meadows and marsh — the Seashore's best view-per-effort walk.", b:"Morning.", o:"Flat-ish and gentle; very good with Mom.", q:"Fort Hill Trail Eastham MA"},
+ {n:"Cape Cod Rail Trail", c:"Drive/Walk", r:"Orleans/Wellfleet", d:"Paved, flat former rail line — the gentlest bike ride on the Cape.", b:"Morning before wind picks up.", o:"Rent in Orleans; Nickerson and Salt Pond stretches are the scenic ones.", q:"Cape Cod Rail Trail Orleans MA"},
+ {n:"Seal cruise to Monomoy", c:"On the Water", r:"Chatham", d:"60–90 min narrated cruise to sandbars where thousands of gray seals haul out.", b:"Calm mornings; ~$40–50 pp; book a few days ahead.", o:"The no-planning route to a guaranteed wow.", q:"seal cruise Chatham MA"},
+ {n:"Whale watch (Dolphin Fleet)", c:"On the Water", r:"Provincetown", d:"3–4 hrs to Stellwagen Bank; humpbacks feed through September.", b:"Morning sailings are calmest; early Sept still prime.", o:"Only if you both have sea legs — it eats half the P-town day.", q:"Dolphin Fleet whale watch Provincetown", link:"https://whalewatch.com", lt:"Website"},
+ {n:"Twenty-Eight Atlantic", c:"Food", r:"Harwich · splurge", d:"The Cape's Forbes five-star, at Wequassett Resort — water-view dining room.", b:"Sunset seating; book 2–3 weeks ahead. The celebration dinner.", o:"Local catch + start with oysters. Dress up a bit.", q:"Twenty-Eight Atlantic Harwich MA", link:"https://wequassett.com/twenty-eight-atlantic/", lt:"Website"},
+ {n:"Ceraldi", c:"Food", r:"Provincetown · splurge", d:"Seven-course tasting menu of that day's local catch and farms.", b:"Book well ahead; the fine-dining P-town night.", o:"Trust the menu — it changes daily.", q:"Ceraldi Provincetown MA"},
+ {n:"Aplaya Kitchen & Tiki Bar", c:"Food", r:"Chatham · fun dinner", d:"Filipino + tiki in Chatham — the fun dinner of the trip.", b:"Book 1–2 weeks ahead in season.", o:"Lumpia, the monkfish loco moco, and a rum drink with an umbrella.", q:"Aplaya Kitchen Tiki Bar Chatham MA"},
+ {n:"The Canteen", c:"Food", r:"Provincetown · casual", d:"Casual standout with backyard seats facing the harbor.", b:"Early dinner on the P-town day beats the line.", o:"Cod bánh mì or the lobster roll; add oysters.", q:"The Canteen Provincetown MA"},
+ {n:"Chatham Pier Fish Market", c:"Food", r:"Chatham · lunch", d:"Lobster rolls at the working fish pier — eat at picnic tables watching the seals.", b:"Lunch, timed to the boats coming in.", o:"Lobster roll (look for whole claw meat) + chowder.", q:"Chatham Pier Fish Market MA"},
+ {n:"Sesuit Harbor Café", c:"Food", r:"Dennis · lunch", d:"The quintessential water's-edge shack, tucked in a boatyard.", b:"Off-peak lunch (11:30 or 2) — lines are real.", o:"The hefty 5–6 oz lobster roll. BYOB; bring cash.", q:"Sesuit Harbor Cafe Dennis MA"},
+ {n:"Mac's on the Pier", c:"Food", r:"Wellfleet · oysters", d:"On Wellfleet harbor — the source for the famous briny local oysters.", b:"Late-afternoon oyster stop on the Wellfleet day.", o:"Wellfleet oysters raw with just lemon + the butter-sautéed lobster roll.", q:"Mac's on the Pier Wellfleet MA", link:"https://macsseafood.com", lt:"Website"},
+ {n:"Arnold's", c:"Food", r:"Eastham · clam shack", d:"The classic full clam shack on Route 6, near the Seashore beaches.", b:"Lunch on the National Seashore day.", o:"Fried whole-belly clams + onion rings; hot-buttered or cold lobster roll.", q:"Arnold's Lobster Clam Bar Eastham MA"},
+ {n:"Provincetown Portuguese Bakery", c:"Food", r:"Provincetown · sweet", d:"Institution from P-town's Portuguese fishing days, 299 Commercial St.", b:"Mid-morning on the P-town day; seasonal (open through fall).", o:"Malasadas WARM, plus a pastéis de nata.", q:"Provincetown Portuguese Bakery", link:"https://provincetownportuguesebakery.com", lt:"Website"},
+ {n:"Chatham Candy Manor", c:"Food", r:"Chatham · sweet", d:"Old-school candy shop with hand-dipping in the window.", b:"Any Main Street stroll.", o:"Dark chocolate turtles.", q:"Chatham Candy Manor MA"}
+];
+
+// ---- render bank ----
+const bank = document.getElementById('bank');
+const filters = document.getElementById('filters');
+let activeFilter = "All";
+function maps(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);}
+function renderFilters(){
+  const cats = ["All", ...Object.keys(CATS)];
+  filters.innerHTML = cats.map(c=>`<button class="fbtn ${c===activeFilter?'active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+}
+function setFilter(c){activeFilter=c; renderFilters(); renderBank();}
+function renderBank(){
+  bank.innerHTML = ACTS.map((a,i)=>{
+    if(activeFilter!=="All" && a.c!==activeFilter) return '';
+    return `<div class="act" draggable="true" data-i="${i}" ondragstart="dragStart(event)" ondragend="dragEnd(event)">
+      <span class="cat" style="background:${CATS[a.c]}">${a.c}</span>
+      <h4>${a.n}</h4><div class="region">${a.r}</div>
+      <p>${a.d}</p>
+      <div class="best sans">⏰ <b>Best time:</b> ${a.b}</div>
+      ${a.o?`<div class="order sans">💡 <b>${a.c==='Food'?'Order':'Tip'}:</b> ${a.o}</div>`:''}
+      <div class="links">
+        <a href="${maps(a.q)}" target="_blank">📍 Map</a>
+        ${a.link?`<a href="${a.link}" target="_blank">🔗 ${a.lt}</a>`:''}
+        <a href="https://www.google.com/search?q=${encodeURIComponent(a.n+' '+a.r.split('·')[0]+' Cape Cod hours reviews')}" target="_blank">🔎 Research</a>
+      </div>
+      <div class="addrow"><span>Add to:</span>
+        <button onclick="addTo('morning',${i})">M</button>
+        <button onclick="addTo('afternoon',${i})">A</button>
+        <button onclick="addTo('evening',${i})">E</button>
+        <button onclick="addTo('food',${i})">🍽</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+// ---- drag & drop ----
+let dragIdx = null;
+function dragStart(e){ dragIdx = +e.currentTarget.dataset.i; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='copy'; }
+function dragEnd(e){ e.currentTarget.classList.remove('dragging'); }
+document.querySelectorAll('.dropzone').forEach(z=>{
+  z.addEventListener('dragover', e=>{e.preventDefault(); z.classList.add('over');});
+  z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+  z.addEventListener('drop', e=>{e.preventDefault(); z.classList.remove('over'); if(dragIdx!==null){addTo(z.dataset.slot, dragIdx); dragIdx=null;}});
+});
+function addTo(slot, i){
+  const a = ACTS[i];
+  const z = document.querySelector(`.dropzone[data-slot="${slot}"]`);
+  const el = document.createElement('div');
+  el.className='planned';
+  const c = (META[a.n]&&META[a.n].$)||0;
+  el.innerHTML = `<span data-name="${a.n.replace(/"/g,'&quot;')}">${a.n}${c?` <span style="color:#8a97a3">· $${c}</span>`:''}</span><button title="remove" onclick="this.closest('.planned').remove(); updateCostBar();">✕</button>`;
+  z.appendChild(el);
+  updateCostBar();
+}
+function clearPlan(){ document.querySelectorAll('.dropzone .planned').forEach(e=>e.remove()); updateCostBar(); }
+function copyPlan(){
+  let out = "Sample Cape Cod day:\n";
+  const day = getDay();
+  Object.keys(day).forEach(slot=>{
+    out += `${slot.toUpperCase()}: ${day[slot].join(', ')||'—'}\n`;
+  });
+  out += `EST. COST FOR TWO: ~$${dayCost(day)} (admissions, parking & typical tabs — excludes lodging & gas)\n`;
+  const done = ()=>toast('Day copied to clipboard!');
+  const fallback = ()=>{ const ta=document.createElement('textarea'); ta.value=out; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){toast('Select + copy manually: see console'); console.log(out);} ta.remove(); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(out).then(done).catch(fallback); } else { fallback(); }
+}
+function toast(msg){
+  let t=document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f3a52;color:#fff;padding:10px 18px;border-radius:8px;font-family:sans-serif;font-size:.85rem;z-index:99;box-shadow:0 4px 14px rgba(0,0,0,.3);'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(t._h); t._h=setTimeout(()=>t.style.opacity='0', 2200);
+}
+// ---- preview + match-up note ----
+// geo position along the Cape (0=Sandwich … 5.5=Provincetown), ideal slots, meal role
+// p = position along the Cape, s = ideal slots, $ = est. cost for two (admission/parking/typical tab)
+const META = {
+ "Lighthouse Beach":{p:2.5,s:["m","e"],$:0}, "Coast Guard Beach":{p:3.5,s:["m"],$:25},
+ "Nauset Light Beach":{p:3.5,s:["a","e"],$:25}, "Nauset Beach":{p:3,s:["m","a"],$:30},
+ "Skaket Beach":{p:3,s:["a","e"],tide:true,$:30}, "Marconi Beach overlook":{p:4.5,s:["m","a"],$:0},
+ "Chatham Main Street":{p:2.5,s:["m","e"],$:20}, "Chatham Fish Pier":{p:2.5,s:["a"],$:0},
+ "Commercial Street":{p:5.5,s:["m","a","e"],$:15}, "Wellfleet center + harbor":{p:4.5,s:["a","e"],$:0},
+ "Orleans Main Street":{p:3,s:["m","a"],$:10}, "Sandwich village":{p:0,s:["m","a"],$:0},
+ "Heritage Museums & Gardens":{p:0,s:["m","a"],$:50}, "Sandwich Glass Museum":{p:0,s:["m","a"],$:30},
+ "Pilgrim Monument & Museum":{p:5.5,s:["m","a"],$:45}, "Chatham Lighthouse":{p:2.5,s:["e"],$:0},
+ "Nauset Light + Three Sisters":{p:3.5,s:["m","a"],$:0}, "P-town East End galleries":{p:5.5,s:["a","e"],$:0},
+ "Route 6A — Old King's Highway":{p:0.5,s:["m","a"],$:15}, "Fort Hill Trail":{p:3.5,s:["m"],$:0},
+ "Cape Cod Rail Trail":{p:3,s:["m"],$:60}, "Seal cruise to Monomoy":{p:2.5,s:["m","a"],$:90},
+ "Whale watch (Dolphin Fleet)":{p:5.5,s:["m","a"],big:true,$:140},
+ "Twenty-Eight Atlantic":{p:2,s:["e"],meal:"dinner",splurge:true,$:250}, "Ceraldi":{p:5.5,s:["e"],meal:"dinner",splurge:true,$:220},
+ "Aplaya Kitchen & Tiki Bar":{p:2.5,s:["e"],meal:"dinner",$:120}, "The Canteen":{p:5.5,s:["a","e"],meal:"dinner",$:70},
+ "Chatham Pier Fish Market":{p:2.5,s:["a"],meal:"lunch",$:60}, "Sesuit Harbor Café":{p:1,s:["a"],meal:"lunch",$:65},
+ "Mac's on the Pier":{p:4.5,s:["a","e"],meal:"lunch",$:70}, "Arnold's":{p:3.5,s:["a"],meal:"lunch",$:60},
+ "Provincetown Portuguese Bakery":{p:5.5,s:["m","a"],meal:"sweet",$:15}, "Chatham Candy Manor":{p:2.5,s:["m","a","e"],meal:"sweet",$:15}
+};
+function dayCost(day){
+  const all = [...day.morning, ...day.afternoon, ...day.evening, ...day.food];
+  return all.reduce((t,n)=> t + ((META[n]&&META[n].$)||0), 0);
+}
+function updateCostBar(){
+  const day = getDay();
+  const c = dayCost(day);
+  const n = [...day.morning,...day.afternoon,...day.evening,...day.food].length;
+  const bar = document.getElementById('costbar');
+  bar.innerHTML = n
+    ? `<span>💵 Est. sample-day cost for two: <b>~$${c}</b> <span style="opacity:.75">(${n} item${n>1?'s':''} · admissions, parking &amp; typical tabs — excludes lodging &amp; gas)</span></span>`
+    : `<span>💵 Est. sample-day cost for two: <b>$0</b> — add activities to see the tab build.</span>`;
+}
+const SLOTNAMES = {m:"morning", a:"afternoon", e:"evening"};
+const SYNERGIES = [
+ [["Chatham Fish Pier","Chatham Pier Fish Market"],"Seals and a lobster roll on the same pier — that's the single best hour in Chatham."],
+ [["Coast Guard Beach","Arnold's"],"Seashore beach + Arnold's fried clams is the classic Eastham pairing — they're minutes apart."],
+ [["Commercial Street","Provincetown Portuguese Bakery"],"Malasadas mid-stroll on Commercial Street: exactly how that street is meant to be done."],
+ [["Wellfleet center + harbor","Mac's on the Pier"],"Gallery loop ending in Wellfleet oysters at the harbor — a perfect golden-hour sequence."],
+ [["Marconi Beach overlook","Commercial Street"],"Marconi overlook is right on the way to P-town — a zero-cost scenic stop."],
+ [["Chatham Main Street","Chatham Candy Manor"],"Candy Manor is ON Main Street — the turtle stop folds right into the stroll."],
+ [["Nauset Light Beach","Nauset Light + Three Sisters"],"Beach + lighthouses share a parking lot — easy two-for-one."],
+ [["Sandwich village","Heritage Museums & Gardens"],"Village stroll + Heritage Gardens is the ideal arrival-day Sandwich combo."]
+];
+function getDay(){
+  const day = {};
+  document.querySelectorAll('.dropzone').forEach(z=>{
+    day[z.dataset.slot] = [...z.querySelectorAll('.planned > span[data-name]')].map(s=>s.dataset.name);
+  });
+  return day;
+}
+function matchupNote(day){
+  const all = [...day.morning, ...day.afternoon, ...day.evening, ...day.food];
+  if(!all.length) return {msgs:["Nothing planned yet — drag a beach, a town, and a lunch in and I'll tell you if they play nicely together."], verdict:"", score:null};
+  const msgs = []; let score = 5;
+  // geography
+  const metas = all.map(n=>META[n]).filter(Boolean);
+  const pos = metas.map(m=>m.p);
+  const spread = Math.max(...pos) - Math.min(...pos);
+  const easternmost = all.filter(n=>META[n]&&META[n].p>=4.5), westernmost = all.filter(n=>META[n]&&META[n].p<=1);
+  if(spread<=1.5) msgs.push("🚗 Geography: tight cluster — everything sits within one pocket of the Cape, so you'll barely touch the car. Ideal for a relaxed pace.");
+  else if(spread<=3) msgs.push("🚗 Geography: a reasonable loop — one stretch of driving (~20–30 min) links your stops, no real backtracking if you sequence them in order along Route 6.");
+  else { msgs.push(`🚗 Geography: this day spans most of the Cape (${westernmost[0]||'the west end'} ↔ ${easternmost[0]||'the outer Cape'}) — that's 1+ hr each way. Consider splitting into two days or dropping the outlier.`); score-=2; }
+  // slot fit
+  let mismatches=0;
+  [["morning","m"],["afternoon","a"],["evening","e"]].forEach(([slot,code])=>{
+    day[slot].forEach(n=>{
+      const m=META[n];
+      if(m && m.s && !m.s.includes(code) && mismatches<3){
+        msgs.push(`⏰ Timing: ${n} really shines in the ${m.s.map(x=>SLOTNAMES[x]).join(" or ")} — it'll be fine in the ${slot}, but you'd get more out of it moved.`);
+        mismatches++;
+      }
+      if(m && m.tide) msgs.push(`🌊 Heads up: ${n} is tide-dependent — check the tide chart link on its card and aim for low tide.`);
+      if(m && m.big) msgs.push(`⚓ Note: the whale watch runs 3–4 hours — treat it as the whole ${slot}, not a stop.`);
+    });
+  });
+  score -= Math.min(mismatches,2);
+  // pacing
+  const anchors = [...day.morning,...day.afternoon,...day.evening].length;
+  if(anchors>5){ msgs.push("🐢 Pacing: that's a packed day for a relaxed trip — with Mom along, 2–3 anchors plus meals is the sweet spot. Consider saving one or two for another day."); score-=1; }
+  else if(anchors<=1 && all.length<=2) msgs.push("🌤 Pacing: a very light day — lovely if it's the do-nothing day; otherwise there's room for one more stop.");
+  else msgs.push("👍 Pacing: nicely balanced — enough to fill the day without rushing anyone.");
+  // meals
+  const dinners = all.filter(n=>META[n]&&META[n].meal==="dinner");
+  const lunches = all.filter(n=>META[n]&&META[n].meal==="lunch");
+  if(dinners.length>=2){ msgs.push(`🍽 Food: ${dinners.join(" and ")} are both dinner-sized — pick one and save the other for another night.`); score-=1; }
+  else if(!dinners.length && anchors>0) msgs.push("🍽 Food: no dinner picked yet — grab one from the Food cards (Aplaya for fun, Twenty-Eight Atlantic for the splurge).");
+  if(dinners.length===1 && META[dinners[0]].splurge) msgs.push(`✨ ${dinners[0]} is the splurge — book it 2–3 weeks out and make this the dress-up evening.`);
+  if(lunches.length>=2) msgs.push("🦞 Two lunch spots on one day is bold but honestly? On vacation, allowed.");
+  // budget
+  const cost = dayCost(day);
+  if(cost>=400) msgs.push(`💵 Budget: this day runs ~$${cost} for two — splurge territory. Balance it with a mostly-free beach day on either side.`);
+  else if(cost<=100) msgs.push(`💵 Budget: gentle on the wallet at ~$${cost} for two — beaches and strolls do the heavy lifting.`);
+  else msgs.push(`💵 Budget: ~$${cost} for two — right in the comfortable middle of the trip's ~$210/day average.`);
+  // synergies
+  SYNERGIES.forEach(([pair,praise])=>{ if(pair.every(x=>all.includes(x))) msgs.push("💫 " + praise); });
+  score = Math.max(1, Math.min(5, score));
+  const verdicts = {5:"Chef's kiss of a day — book it.",4:"Solid match-up — small tweaks at most.",3:"Workable, with the tweaks above.",2:"Ambitious — worth splitting or trimming.",1:"This day is fighting itself — let's rebuild it."};
+  return {msgs, verdict:`${"🦞".repeat(score)}${"○".repeat(5-score)}  ${verdicts[score]}`, score};
+}
+function previewPlan(){
+  const day = getDay();
+  const {msgs, verdict} = matchupNote(day);
+  const block = (label, items) => `<div class="tblock"><div class="tl">${label}</div>${
+    items.length ? items.map(n=>{const m=META[n]; const a=ACTS.find(x=>x.n===n); const c=(m&&m.$)||0;
+      return `<div class="ti">${n} <span class="rg">· ${a?a.r:""}${c?` · ~$${c}`:" · free"}</span></div>`;}).join('')
+    : '<div class="empty">— open —</div>'}</div>`;
+  const total = dayCost(day);
+  const ov = document.createElement('div');
+  ov.className='overlay';
+  ov.innerHTML = `<div class="modal">
+    <h3>Your sample day, all together</h3>
+    <div class="msub">Sequenced morning → evening, with food picks alongside</div>
+    <div class="tline">
+      ${block("☀️ Morning", day.morning)}
+      ${block("🌤 Afternoon", day.afternoon)}
+      ${block("🌅 Evening", day.evening)}
+      ${block("🍽 Food picks", day.food)}
+    </div>
+    <div class="daycost" style="margin:0 0 12px;">💵 Est. day total for two: <b>~$${total}</b> <span style="opacity:.7">(admissions, parking &amp; typical tabs — excludes lodging &amp; gas)</span></div>
+    <div class="chatnote">
+      <div class="cn-head">💬 Claude's take on the match-up</div>
+      ${msgs.map(m=>`<p>${m}</p>`).join('')}
+      ${verdict?`<div class="verdict">${verdict}</div>`:''}
+    </div>
+    <button class="mclose" onclick="this.closest('.overlay').remove()">Close preview</button>
+  </div>`;
+  ov.addEventListener('click', e=>{ if(e.target===ov) ov.remove(); });
+  document.body.appendChild(ov);
+}
+// ---- saved days & notes ----
+let savedCount = 0;
+const savedData = []; // {id, title, day, cost}
+function saveDay(){
+  const day = getDay();
+  const all = [...day.morning,...day.afternoon,...day.evening,...day.food];
+  if(!all.length){ toast('Build a day first, then save it.'); return; }
+  savedCount++;
+  const id = 'sd'+savedCount;
+  savedData.push({id, day});
+  const cost = dayCost(day);
+  const lines = [["☀️ M", day.morning],["🌤 A", day.afternoon],["🌅 E", day.evening],["🍽", day.food]]
+    .filter(([,items])=>items.length)
+    .map(([l,items])=>`<b>${l}</b> ${items.join(' · ')}`).join('&nbsp;&nbsp;|&nbsp;&nbsp;');
+  const empty = document.querySelector('#savedDays .saved-empty');
+  if(empty) empty.remove();
+  const el = document.createElement('div');
+  el.className='sday'; el.id=id;
+  el.innerHTML = `
+    <div class="stitle" contenteditable="true" spellcheck="false">Day idea #${savedCount} — click to rename</div>
+    <div class="sitems">${lines}</div>
+    <div class="scost">💵 ~$${cost} for two</div>
+    <textarea placeholder="Notes — what Mom said, what to double-check, which window this fits…"></textarea>
+    <div class="sbtns">
+      <button onclick="loadDay('${id}')">↩ Load into planner</button>
+      <button onclick="copyOne('${id}')">📋 Copy</button>
+      <button onclick="deleteDay('${id}')">🗑 Delete</button>
+    </div>`;
+  document.getElementById('savedDays').appendChild(el);
+  toast('Day saved — find it in the 📓 Notes tab');
+}
+function sdayText(id){
+  const el = document.getElementById(id);
+  const rec = savedData.find(s=>s.id===id);
+  let out = el.querySelector('.stitle').textContent.trim() + "\n";
+  Object.keys(rec.day).forEach(slot=>{ if(rec.day[slot].length) out += `${slot.toUpperCase()}: ${rec.day[slot].join(', ')}\n`; });
+  out += `EST. COST FOR TWO: ~$${dayCost(rec.day)}\n`;
+  const notes = el.querySelector('textarea').value.trim();
+  if(notes) out += `NOTES: ${notes}\n`;
+  return out;
+}
+function copyOne(id){ clip(sdayText(id), 'Day copied!'); }
+function copyAllNotes(){
+  const g = (document.getElementById('gnotes')||{value:''}).value.trim();
+  if(!savedData.length && !g){ toast('No notes yet.'); return; }
+  let out = "CAPE COD — TRIP NOTES\n\n";
+  if(g) out += "GENERAL NOTES:\n" + g + "\n\n";
+  if(savedData.length) out += "SAVED SAMPLE DAYS:\n\n" + savedData.map(s=>sdayText(s.id)).join("\n");
+  clip(out, 'All notes copied — paste them somewhere safe!');
+}
+function loadDay(id){
+  const rec = savedData.find(s=>s.id===id);
+  showTab(1, document.querySelectorAll('.tab-btn')[1]); // jump to the planner tab so the loaded day is visible
+  clearPlan();
+  Object.keys(rec.day).forEach(slot=>rec.day[slot].forEach(n=>{
+    const i = ACTS.findIndex(a=>a.n===n); if(i>-1) addTo(slot,i);
+  }));
+  document.getElementById('planner').scrollIntoView({behavior:'smooth'});
+  toast('Loaded back into the planner ↑');
+}
+function deleteDay(id){
+  document.getElementById(id).remove();
+  savedData.splice(savedData.findIndex(s=>s.id===id),1);
+  if(!savedData.length) document.getElementById('savedDays').innerHTML = '<div class="saved-empty">Nothing saved yet — build a day in the <b>Activity Bank</b> tab and hit “Save day to notes.”</div>';
+}
+function clip(text, okMsg){
+  const done = ()=>toast(okMsg);
+  const fallback = ()=>{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){toast('Copy failed — text logged to console'); console.log(text);} ta.remove(); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(fallback); } else { fallback(); }
+}
+// ---- tabs ----
+function showTab(n, btn){
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active', i===n));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+renderFilters(); renderBank();
+
+// ---- persistence (published-site version): auto-save to this device's browser storage ----
+const LSKEY = 'capecod-planner-v1';
+let restoring = false;
+function snapshotAll(){
+  return {
+    current: getDay(),
+    gnotes: (document.getElementById('gnotes')||{value:''}).value,
+    saved: savedData.map(s=>{
+      const el = document.getElementById(s.id);
+      return { day: s.day,
+        title: el ? el.querySelector('.stitle').textContent.trim() : '',
+        notes: el ? el.querySelector('textarea').value : '' };
+    }),
+    checks: [...document.querySelectorAll('#tab0 td input[type=checkbox]')].map(c=>c.checked)
+  };
+}
+function persistAll(){
+  if(restoring) return;
+  try{ localStorage.setItem(LSKEY, JSON.stringify(snapshotAll())); }catch(e){}
+}
+// wrap existing mutators
+const _toast = toast;
+toast = function(m){ if(!restoring) _toast(m); };
+const _updateCostBar = updateCostBar;
+updateCostBar = function(){ _updateCostBar(); persistAll(); };
+const _saveDay = saveDay;
+saveDay = function(){ _saveDay(); persistAll(); };
+const _deleteDay = deleteDay;
+deleteDay = function(id){ _deleteDay(id); persistAll(); };
+document.addEventListener('input', e=>{ if(e.target.closest('.sday') || e.target.id==='gnotes') persistAll(); });
+document.addEventListener('change', e=>{ if(e.target.matches('#tab0 td input[type=checkbox]')) persistAll(); });
+function restoreAll(){
+  let data; try{ data = JSON.parse(localStorage.getItem(LSKEY)); }catch(e){}
+  if(!data) return;
+  restoring = true;
+  try{
+    (data.checks||[]).forEach((v,i)=>{ const c=document.querySelectorAll('#tab0 td input[type=checkbox]')[i]; if(c) c.checked=v; });
+    if(data.gnotes) document.getElementById('gnotes').value = data.gnotes;
+    (data.saved||[]).forEach(rec=>{
+      clearPlan();
+      Object.keys(rec.day||{}).forEach(slot=>(rec.day[slot]||[]).forEach(n=>{ const i=ACTS.findIndex(a=>a.n===n); if(i>-1) addTo(slot,i); }));
+      _saveDay();
+      const el = document.getElementById('sd'+savedCount);
+      if(el){ if(rec.title) el.querySelector('.stitle').textContent = rec.title; el.querySelector('textarea').value = rec.notes||''; }
+    });
+    clearPlan();
+    Object.keys(data.current||{}).forEach(slot=>(data.current[slot]||[]).forEach(n=>{ const i=ACTS.findIndex(a=>a.n===n); if(i>-1) addTo(slot,i); }));
+  } finally { restoring = false; }
+}
+restoreAll();
+</script>
+</body>
+</html>
