@@ -172,7 +172,8 @@
   <button class="tab-btn active" onclick="showTab(0,this)">Proposed Itinerary</button>
   <button class="tab-btn" onclick="showTab(1,this)">Activity Bank + Day Planner</button>
   <button class="tab-btn" onclick="showTab(2,this)">Lodging Scores</button>
-  <button class="tab-btn" onclick="showTab(3,this)">📓 Notes</button>
+  <button class="tab-btn" onclick="showTab(3,this)">💰 Budget</button>
+  <button class="tab-btn" onclick="showTab(4,this)">📓 Notes</button>
 </div>
 
 <main>
@@ -238,19 +239,7 @@
     <div class="daycost">💵 Est. day cost for two: <b>~$115</b> — coffee $15 · lunch stop $50 · gas/tolls $50</div>
   </div>
 
-  <div class="totalbox">
-    <h3>💰 Estimated budget by category (2 people · 4 nights · Aug 20–24)</h3>
-    <table>
-      <tr><th>Category</th><th>Low</th><th>High</th><th>What's in it</th></tr>
-      <tr><td>🚗 Transportation</td><td>$120</td><td>$200</td><td>Gas + tolls round trip from NYC; beach/Seashore parking (~$25/day)</td></tr>
-      <tr><td>🏨 Lodging (4 nights)</td><td>$1,500</td><td>$2,400</td><td>Mid-range inn/B&amp;B (Old Harbor / Captain's). Splurge resort adds $1,000–2,500</td></tr>
-      <tr><td>🎟 Activities</td><td>$150</td><td>$350</td><td>Heritage Gardens, Pilgrim Monument, museums; +seal cruise ~$90 / whale watch ~$140</td></tr>
-      <tr><td>🍽 Food (2 meals/day)</td><td>$700</td><td>$1,050</td><td>Casual meals for two + the two splurge dinners (28 Atlantic, Aplaya/Ceraldi)</td></tr>
-      <tr><td>🛍 Misc / buffer</td><td>$200</td><td>$350</td><td>Coffee, treats, souvenirs, tips, the-Cape-finds-ways cushion</td></tr>
-      <tr><td style="border-top:2px solid rgba(255,255,255,.35)"><b>Total (two)</b></td><td style="border-top:2px solid rgba(255,255,255,.35)"><b>~$2,700</b></td><td style="border-top:2px solid rgba(255,255,255,.35)"><b>~$4,350</b></td><td style="border-top:2px solid rgba(255,255,255,.35)">≈ $1,350–2,175 per person</td></tr>
-    </table>
-    <div class="grand">➞ Plan on <b>roughly $2,900–4,000 all-in for two</b> for a comfortable version. Biggest levers: lodging tier, and whether you add the seal cruise + a second splurge dinner. The Sept fallback window runs ~$600–800 less. Live day-by-day tallies are on the Activity Bank tab.</div>
-  </div>
+  <div class="note">💰 <b>Full budget breakdown</b> — transportation, lodging, activities, food, and misc — now lives on the <b>💰 Budget</b> tab. Quick version: plan on roughly <b>$2,900–4,000 all-in for two</b>.</div>
 
   <h2>Book-ahead list</h2>
   <table>
@@ -464,7 +453,40 @@
   <div class="note sans" style="font-size:.85rem;">📌 How to read it: <b>Clean</b> = housekeeping reputation (your non-negotiable — green dots). <b>Fun</b> = amenities + atmosphere. <b>Convenient</b> = walkability to Main St / beach. <b>Quiet</b> = higher means better sleep. Highlighted rows = best overall fit for this trip's brief (Old Harbor Inn &amp; Captain's House both scored cleanest). Still confirm cleanliness in the newest reviews before booking. Sources: <a href="https://www.tripadvisor.com/Hotels-g41499-Chatham_Cape_Cod_Massachusetts-Hotels.html" target="_blank">Tripadvisor Chatham hotels</a>, <a href="https://www.hyperlocalcapecod.com/guides/where-should-i-stay-in-chatham-ma" target="_blank">HyperLocal Cape Cod guide</a>, individual Tripadvisor property pages.</div>
 </section>
 
-<!-- ============ TAB 4: NOTES ============ -->
+<!-- ============ TAB 4: BUDGET ============ -->
+<section class="tab-panel" id="tab4">
+  <h2>💰 Estimated budget</h2>
+  <p class="sans" style="font-size:.9rem; color:var(--muted); margin-bottom:6px;">Two people · 4 nights · Thu Aug 20 → Mon Aug 24 · driving from NYC. Ranges, not quotes — verify live prices before booking.</p>
+  <div class="totalbox">
+    <h3>By category</h3>
+    <table>
+      <tr><th>Category</th><th>Low</th><th>High</th><th>What's in it</th></tr>
+      <tr><td>🚗 Transportation</td><td>$120</td><td>$200</td><td>Gas + tolls round trip from NYC; beach/Seashore parking (~$25/day)</td></tr>
+      <tr><td>🏨 Lodging (4 nights)</td><td>$1,500</td><td>$2,400</td><td>Mid-range inn/B&amp;B (Old Harbor / Captain's). Splurge resort adds $1,000–2,500</td></tr>
+      <tr><td>🎟 Activities</td><td>$150</td><td>$350</td><td>Heritage Gardens, Pilgrim Monument, museums; +seal cruise ~$90 / whale watch ~$140</td></tr>
+      <tr><td>🍽 Food (2 meals/day)</td><td>$700</td><td>$1,050</td><td>Casual meals for two + the two splurge dinners (28 Atlantic, Aplaya/Ceraldi)</td></tr>
+      <tr><td>🛍 Misc / buffer</td><td>$200</td><td>$350</td><td>Coffee, treats, souvenirs, tips, the-Cape-finds-ways cushion</td></tr>
+      <tr><td style="border-top:2px solid rgba(255,255,255,.35)"><b>Total (two)</b></td><td style="border-top:2px solid rgba(255,255,255,.35)"><b>~$2,700</b></td><td style="border-top:2px solid rgba(255,255,255,.35)"><b>~$4,350</b></td><td style="border-top:2px solid rgba(255,255,255,.35)">≈ $1,350–2,175 per person</td></tr>
+    </table>
+    <div class="grand">➞ Plan on <b>roughly $2,900–4,000 all-in for two</b> for a comfortable version. The Sept fallback window runs ~$600–800 less.</div>
+  </div>
+
+  <h2 style="font-size:1.15rem;">Where the money moves — the big levers</h2>
+  <div class="note">🏨 <b>Lodging tier</b> is the #1 lever: a clean mid-range inn (~$375/night) vs. Chatham Bars Inn / Wequassett (~$800–1,200/night) swings the trip by $1,500–3,000. · 🦞 <b>Splurge dinners</b>: each fine-dining night (Twenty-Eight Atlantic ~$250, Ceraldi ~$220) is optional — one is plenty. · ⛵ <b>Add-ons</b>: seal cruise ~$90, whale watch ~$140 for two. · 🗓 <b>Timing</b>: the post–Labor Day fallback shaves ~$600–800 off lodging.</div>
+
+  <h2 style="font-size:1.15rem;">Day-by-day estimate (activities + food + gas)</h2>
+  <table>
+    <tr><th>Day</th><th>Est. for two</th><th>Drivers</th></tr>
+    <tr><td>Thu — Arrival via 6A</td><td>~$240</td><td>gas/tolls, lunch, Heritage Gardens, dinner</td></tr>
+    <tr><td>Fri — Chatham</td><td>~$200</td><td>pier lunch, Aplaya dinner (+$90 seal cruise)</td></tr>
+    <tr><td>Sat — Provincetown</td><td>~$160</td><td>parking, museum, casual dinner (+$150 if Ceraldi)</td></tr>
+    <tr><td>Sun — Outer Cape + splurge</td><td>~$325</td><td>Seashore parking, oysters, Twenty-Eight Atlantic</td></tr>
+    <tr><td>Mon — Departure</td><td>~$115</td><td>coffee, lunch stop, gas/tolls home</td></tr>
+  </table>
+  <div class="note sans" style="font-size:.83rem;">These exclude lodging. Build your own day and watch a live tally on the <b>Activity Bank</b> tab — every card carries its cost.</div>
+</section>
+
+<!-- ============ TAB 5: NOTES ============ -->
 <section class="tab-panel" id="tab3">
   <h2>📓 Trip notes</h2>
   <div class="saved-wrap">
